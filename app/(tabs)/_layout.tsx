@@ -1,6 +1,7 @@
-import { TabBarIcon } from "@/components/tabbar-icon";
-import { useColorScheme } from "@/lib/use-color-scheme";
 import { Tabs } from "expo-router";
+import React from "react";
+import { useColorScheme } from "@/lib/use-color-scheme";
+import { TabBarIcon } from "@/components/tabbar-icon";
 
 export default function TabLayout() {
 	const { isDarkColorScheme } = useColorScheme();
@@ -26,16 +27,16 @@ export default function TabLayout() {
 			}}
 		>
 			<Tabs.Screen
-				name="index"
+				name="home"
 				options={{
 					title: "Home",
 					tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
 				}}
 			/>
 			<Tabs.Screen
-				name="two"
+				name="setting"
 				options={{
-					title: "Explore",
+					title: "Settings",
 					tabBarIcon: ({ color }) => (
 						<TabBarIcon name="compass" color={color} />
 					),

@@ -13,6 +13,9 @@ import React, { useRef } from "react";
 import { useColorScheme } from "@/lib/use-color-scheme";
 import { Platform } from "react-native";
 import { setAndroidNavigationBar } from "@/lib/android-navigation-bar";
+import { authClient } from "@/lib/auth-client";
+import { SafeAreaView } from "react-native-safe-area-context";
+
 
 const LIGHT_THEME: Theme = {
 	...DefaultTheme,
@@ -24,13 +27,14 @@ const DARK_THEME: Theme = {
 };
 
 export const unstable_settings = {
-	initialRouteName: "(drawer)",
+	initialRouteName: "(tabs)",
 };
 
 export default function RootLayout() {
 	const hasMounted = useRef(false);
 	const { colorScheme, isDarkColorScheme } = useColorScheme();
 	const [isColorSchemeLoaded, setIsColorSchemeLoaded] = React.useState(false);
+	const { data: session, isPending } = authClient.useSession();
 
 	useIsomorphicLayoutEffect(() => {
 		if (hasMounted.current) {
@@ -45,22 +49,28 @@ export default function RootLayout() {
 		hasMounted.current = true;
 	}, []);
 
-	if (!isColorSchemeLoaded) {
+	if (!isColorSchemeLoaded || isPending) {
 		return null;
 	}
+
 	return (
-		<ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
-			<StatusBar style={isDarkColorScheme ? "light" : "dark"} />
-			<GestureHandlerRootView style={{ flex: 1 }}>
-				<Stack>
-					<Stack.Screen name="(drawer)" options={{ headerShown: false }} />
-					<Stack.Screen
-						name="modal"
-						options={{ title: "Modal", presentation: "modal" }}
-					/>
-				</Stack>
-			</GestureHandlerRootView>
-		</ThemeProvider>
+		<SafeAreaView style={{
+			flex: 1,
+			backgroundColor: isDarkColorScheme ? NAV_THEME.dark.background : NAV_THEME.light.background,
+		}}>
+			<ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
+				<StatusBar style={isDarkColorScheme ? "light" : "dark"} />
+				<GestureHandlerRootView style={{ flex: 1 }}>
+					<Stack>
+						{session ? (
+							<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+						) : (
+							<Stack.Screen name="(auth)/index" options={{ headerShown: false }} />
+						)}
+					</Stack>
+				</GestureHandlerRootView>
+			</ThemeProvider>
+		</SafeAreaView>
 	);
 }
 
