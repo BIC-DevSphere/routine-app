@@ -1,35 +1,23 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { View, TextInput, Text, TouchableOpacity } from "react-native";
 import { Picker } from "@react-native-picker/picker"
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { authClient } from "@/lib/auth-client";
 import { useColorScheme } from "@/lib/use-color-scheme";
 import ToastManager, { Toast } from 'toastify-react-native'
-import axios from "axios";
+import { useGroups } from "@/context/groupContext";
 
 export default function SignUp() {
     const [email, setEmail] = useState("");
     const [name, setName] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
-    const [groups, setGroups] = useState<{id: string, name: string}[]>([])
+    const { groups } = useGroups();
     const [selectedGroup, setSelectedGroup] = useState("");
     const [loading, setLoading] = useState<boolean>(false);
     const { isDarkColorScheme } = useColorScheme();
 
     const placeholderColor = isDarkColorScheme ? "#9CA3AF" : "#6B7280";
-
-    useEffect(() => {
-        const fetchGroups = async () => {
-            try {
-                const res = await axios.get('http://192.168.254.235:3000/api/groups');
-                setGroups(res.data.data);
-            } catch (error) {
-                console.error(error);
-            }
-        };
-        fetchGroups();
-    }, [])
 
     const handleLogin = async () => {
         setLoading(true);

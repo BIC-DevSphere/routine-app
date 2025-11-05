@@ -15,6 +15,7 @@ import { Platform } from "react-native";
 import { setAndroidNavigationBar } from "@/lib/android-navigation-bar";
 import { authClient } from "@/lib/auth-client";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { GroupsProvider } from "@/context/groupContext";
 
 
 const LIGHT_THEME: Theme = {
@@ -54,6 +55,7 @@ export default function RootLayout() {
 	}
 
 	return (
+		<GroupsProvider>
 		<SafeAreaView style={{
 			flex: 1,
 			backgroundColor: isDarkColorScheme ? NAV_THEME.dark.background : NAV_THEME.light.background,
@@ -71,6 +73,7 @@ export default function RootLayout() {
 				</GestureHandlerRootView>
 			</ThemeProvider>
 		</SafeAreaView>
+		</GroupsProvider>
 	);
 }
 
