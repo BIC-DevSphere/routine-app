@@ -16,7 +16,9 @@ import { setAndroidNavigationBar } from "@/lib/android-navigation-bar";
 import { authClient } from "@/lib/auth-client";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { GroupsProvider } from "@/context/groupContext";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
+const queryClient = new QueryClient();
 
 const LIGHT_THEME: Theme = {
 	...DefaultTheme,
@@ -55,6 +57,7 @@ export default function RootLayout() {
 	}
 
 	return (
+		<QueryClientProvider client={queryClient}>
 		<GroupsProvider>
 		<SafeAreaView style={{
 			flex: 1,
@@ -74,6 +77,7 @@ export default function RootLayout() {
 			</ThemeProvider>
 		</SafeAreaView>
 		</GroupsProvider>
+		</QueryClientProvider>
 	);
 }
 

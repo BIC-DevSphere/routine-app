@@ -1,4 +1,5 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { createContext, useContext, ReactNode } from "react";
+import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
 type Group = { id: string; name: string };
@@ -15,26 +16,16 @@ const GroupsContext = createContext<GroupsContextType>({
 });
 
 export function GroupsProvider({ children }: { children: ReactNode }) {
-  const [groups, setGroups] = useState<Group[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchGroups = async () => {
-      try {
-        const res = await axios.get("http://192.168.254.235:3000/api/groups");
-        setGroups(res.data.data);
-      } catch (err: any) {
-        setError(err?.message || "Failed to fetch groups");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchGroups();
-  }, []);
+  const { data: groups = [], isLoading: loading, error } = useQuery({
+    queryKey: ["groups"],
+    queryFn: async () => {
+      const res = await axios.get("http://192.168.254.235:3000/api/groups");
+      return res.data.data;
+    },
+  });
 
   return (
-    <GroupsContext.Provider value={{ groups, loading, error }}>
+    <GroupsContext.Provider value={{ groups, loading, error: error?.message || null }}>
       {children}
     </GroupsContext.Provider>
   );
