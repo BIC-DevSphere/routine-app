@@ -18,6 +18,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { GroupsProvider } from "@/context/groupContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
+// Create a client
+
 const queryClient = new QueryClient();
 
 const LIGHT_THEME: Theme = {
@@ -58,25 +60,23 @@ export default function RootLayout() {
 
 	return (
 		<QueryClientProvider client={queryClient}>
-		<GroupsProvider>
-		<SafeAreaView style={{
-			flex: 1,
-			backgroundColor: isDarkColorScheme ? NAV_THEME.dark.background : NAV_THEME.light.background,
-		}}>
-			<ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
-				<StatusBar style={isDarkColorScheme ? "light" : "dark"} />
-				<GestureHandlerRootView style={{ flex: 1 }}>
-					<Stack>
-						{session ? (
-							<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-						) : (
-							<Stack.Screen name="(auth)/index" options={{ headerShown: false }} />
-						)}
-					</Stack>
-				</GestureHandlerRootView>
-			</ThemeProvider>
-		</SafeAreaView>
-		</GroupsProvider>
+			<SafeAreaView style={{
+				flex: 1,
+				backgroundColor: isDarkColorScheme ? NAV_THEME.dark.background : NAV_THEME.light.background,
+			}}>
+				<ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
+					<StatusBar style={isDarkColorScheme ? "light" : "dark"} />
+					<GestureHandlerRootView style={{ flex: 1 }}>
+						<Stack>
+							{session ? (
+								<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+							) : (
+								<Stack.Screen name="(auth)/index" options={{ headerShown: false }} />
+							)}
+						</Stack>
+					</GestureHandlerRootView>
+				</ThemeProvider>
+			</SafeAreaView>
 		</QueryClientProvider>
 	);
 }
