@@ -63,7 +63,7 @@ export default function SignIn() {
                 />
                 <TouchableOpacity onPress={() => setShowPassword(!showPassword)} >
                     <Ionicons
-                        name={showPassword ? "eye-off" : "eye"}
+                        name={showPassword ? "eye" : "eye-off"}
                         size={20}
                         color={placeholderColor}
                     />

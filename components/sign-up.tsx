@@ -31,6 +31,7 @@ export default function SignUp() {
             email,
             password,
             name,
+            // groupId: selectedGroup,
         });
         setLoading(false)
 
@@ -78,7 +79,7 @@ export default function SignUp() {
                 />
                 <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={{ marginLeft: 8 }}>
                     <Ionicons
-                        name={showPassword ? "eye-off" : "eye"}
+                        name={showPassword ? "eye" : "eye-off"}
                         size={20}
                         color={placeholderColor}
                     />
@@ -92,7 +93,7 @@ export default function SignUp() {
             >
                 <Picker.Item label="Select Group" value="" enabled={false} />
                 {groups.map((e)=>(
-                    <Picker.Item key={e.id} label={e.name}  />
+                    <Picker.Item key={e.id} label={e.name} value={e.id}  />
                 ))}
             </Picker>
             </View>
