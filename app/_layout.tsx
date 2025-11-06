@@ -60,6 +60,7 @@ export default function RootLayout() {
 
 	return (
 		<QueryClientProvider client={queryClient}>
+			<GroupsProvider>
 			<SafeAreaView style={{
 				flex: 1,
 				backgroundColor: isDarkColorScheme ? NAV_THEME.dark.background : NAV_THEME.light.background,
@@ -68,7 +69,7 @@ export default function RootLayout() {
 					<StatusBar style={isDarkColorScheme ? "light" : "dark"} />
 					<GestureHandlerRootView style={{ flex: 1 }}>
 						<Stack>
-							{session ? (
+							{true ? (
 								<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 							) : (
 								<Stack.Screen name="(auth)/index" options={{ headerShown: false }} />
@@ -77,6 +78,7 @@ export default function RootLayout() {
 					</GestureHandlerRootView>
 				</ThemeProvider>
 			</SafeAreaView>
+			</GroupsProvider>
 		</QueryClientProvider>
 	);
 }

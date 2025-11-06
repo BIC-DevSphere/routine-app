@@ -55,6 +55,15 @@ export default function Home() {
 	const days = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"]
 
 	console.log(todayRoutine)
+
+		function formatTime(time: string) {
+		const [hour, minute] = time.split(":");
+		let h = parseInt(hour, 10);
+		const ampm = h >= 12 ? "PM" : "AM";
+		h = h % 12 || 12;
+		return `${h}:${minute} ${ampm}`;
+}
+
 	return (
 		<Container>
 			<ScrollView
@@ -117,14 +126,48 @@ export default function Home() {
 					})}
 				</View>
 
-				{routineData?.data &&
-					routineData.data.week.every((day) => day.slots.length === 0) && (
-						<View className="px-4 py-20">
-							<Text className="text-center text-muted-foreground text-lg">
-								No classes scheduled this week 
-							</Text>
-						</View>
-					)}
+				<View className="px-4 pt-6">
+					{routineData?.data &&
+						routineData.data.week.every((day) => day.slots.length === 0) ? (
+							<View className="px-4 py-20">
+								<Text className="text-center text-muted-foreground text-lg">
+									No classes scheduled this week 
+								</Text>
+							</View>
+						) : (
+							todayRoutine?.slots.length ? (
+								todayRoutine.slots.map((slot, idx) => (
+									<View
+										key={idx}
+										className="mb-4 p-4 rounded-lg border border-primary/20 bg-primary/5"
+									>
+										<Text className="text-lg font-semibold text-foreground mb-1">
+											{slot.moduleName} ({slot.moduleCode})
+										</Text>
+										<Text className="text-base text-muted-foreground">
+											{slot.classType} | {formatTime(slot.startTime)} - {formatTime(slot.endTime)}
+										</Text>
+										{slot.room && (
+											<Text className="text-sm text-muted-foreground mt-1">
+												Room: {slot.room}
+											</Text>
+										)}
+										{slot.teacher && (
+											<Text className="text-sm text-muted-foreground mt-1">
+												Teacher: {slot.teacher}
+											</Text>
+										)}
+									</View>
+								))
+							) : (
+								<View className="px-4 py-20">
+									<Text className="text-center text-muted-foreground text-lg">
+										No classes scheduled for this day
+									</Text>
+								</View>
+							)
+						)}
+				</View>
 			</ScrollView>
 		</Container>
 	);
