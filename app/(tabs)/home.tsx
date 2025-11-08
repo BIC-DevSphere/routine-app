@@ -1,10 +1,9 @@
 import { Container } from "@/components/container";
 import { ScrollView, Text, View, ActivityIndicator, RefreshControl, TouchableOpacity } from "react-native";
 import { authClient } from "@/lib/auth-client";
-import { useQuery } from "@tanstack/react-query";
-import { fetchRoutine } from "@/lib/api/routine";
 import { useState, useEffect } from "react";
 import { WeekDay } from "@/lib/types/routine";
+import { useRoutine } from "@/lib/api/routine";
 
 export default function Home() {
 	const { data: session, isRefetching, isPending } = authClient.useSession();
@@ -17,20 +16,11 @@ export default function Home() {
 		isLoading,
 		error,
 		refetch,
-	} = useQuery({
-		queryKey: ["routine"],
-		queryFn: async () => {
-			if (!session?.session.token) {
-				throw new Error("No auth token available");
-			}
-			return fetchRoutine(session.session.token);
-		},
-		enabled: !!session?.session.token,
-	});
+	} = useRoutine();
 
 	useEffect(() => {
-		if (routineData?.data?.week) {
-			const routineForToday = routineData.data.week[activeDayIndex];
+		if (routineData?.week) {
+			const routineForToday = routineData.week[activeDayIndex];
 			setTodayRoutine(routineForToday);
 		}
 	}, [activeDayIndex, routineData]);
@@ -54,7 +44,6 @@ export default function Home() {
 
 	const days = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"]
 
-	console.log(todayRoutine)
 
 		function formatTime(time: string) {
 		const [hour, minute] = time.split(":");
@@ -127,8 +116,8 @@ export default function Home() {
 				</View>
 
 				<View className="px-4 pt-6">
-					{routineData?.data &&
-						routineData.data.week.every((day) => day.slots.length === 0) ? (
+					{routineData &&
+						routineData.week.every((day: WeekDay) => day.slots.length === 0) ? (
 							<View className="px-4 py-20">
 								<Text className="text-center text-muted-foreground text-lg">
 									No classes scheduled this week 

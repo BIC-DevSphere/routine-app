@@ -4,12 +4,14 @@ import { authClient } from "@/lib/auth-client";
 import { useColorScheme } from "@/lib/use-color-scheme";
 import ToastManager, { Toast } from 'toastify-react-native'
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import NeedHelp from "./need-help";
 
 export default function SignIn() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState<boolean>(false);
+    const [showNeedHelp, setShowNeedHelp] = useState(false);
     const { isDarkColorScheme } = useColorScheme();
 
     const placeholderColor = isDarkColorScheme ? "#9CA3AF" : "#6B7280"; 
@@ -75,6 +77,18 @@ export default function SignIn() {
             >
                 <Text className="text-secondary text-center font-bold">{loading ? "Logging in " : "Login "}</Text>
             </TouchableOpacity>
+
+            <TouchableOpacity
+                className="bg-muted/50 border border-muted rounded-xl p-3 mt-2"
+                onPress={() => setShowNeedHelp(true)}
+            >
+                <Text className="text-muted-foreground text-center font-medium">Need Help?</Text>
+            </TouchableOpacity>
+
+            <NeedHelp 
+                visible={showNeedHelp}
+                onClose={() => setShowNeedHelp(false)}
+            />
 
             <ToastManager />
         </View>

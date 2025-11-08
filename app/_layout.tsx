@@ -69,7 +69,7 @@ export default function RootLayout() {
 					<StatusBar style={isDarkColorScheme ? "light" : "dark"} />
 					<GestureHandlerRootView style={{ flex: 1 }}>
 						<Stack>
-							{true ? (
+							{session ? (
 								<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 							) : (
 								<Stack.Screen name="(auth)/index" options={{ headerShown: false }} />

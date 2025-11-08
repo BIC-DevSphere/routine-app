@@ -19,6 +19,7 @@ export default function SignUp() {
 
     const placeholderColor = isDarkColorScheme ? "#9CA3AF" : "#6B7280";
 
+
     const handleLogin = async () => {
         setLoading(true);
         if (email == "" || password == "" || name == "" || selectedGroup == "") {
@@ -31,7 +32,7 @@ export default function SignUp() {
             email,
             password,
             name,
-            // groupId: selectedGroup,
+            groupId: selectedGroup,
         });
         setLoading(false)
 
