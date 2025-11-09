@@ -2,6 +2,7 @@ import { createAuthClient } from "better-auth/react";
 import { expoClient } from "@better-auth/expo/client";
 import * as SecureStore from "expo-secure-store";
 import { inferAdditionalFields } from "better-auth/client/plugins";
+import { Platform } from 'react-native';
 
 type AuthConfig = {
     user: {
@@ -20,7 +21,7 @@ export const authClient = createAuthClient({
         expoClient({
             scheme: "routine-app",
             storagePrefix: "routine-app",
-            storage: SecureStore,
+            storage: Platform.OS === 'web' ? localStorage : SecureStore,
         }),
         inferAdditionalFields<AuthConfig>()
     ],

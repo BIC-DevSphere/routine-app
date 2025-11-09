@@ -1,4 +1,4 @@
-import { Stack } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import {
 	DarkTheme,
 	DefaultTheme,
@@ -17,8 +17,6 @@ import { authClient } from "@/lib/auth-client";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { GroupsProvider } from "@/context/groupContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
-// Create a client
 
 const queryClient = new QueryClient();
 
@@ -40,6 +38,7 @@ export default function RootLayout() {
 	const { colorScheme, isDarkColorScheme } = useColorScheme();
 	const [isColorSchemeLoaded, setIsColorSchemeLoaded] = React.useState(false);
 	const { data: session, isPending } = authClient.useSession();
+	const router = useRouter();
 
 	useIsomorphicLayoutEffect(() => {
 		if (hasMounted.current) {
@@ -53,6 +52,16 @@ export default function RootLayout() {
 		setIsColorSchemeLoaded(true);
 		hasMounted.current = true;
 	}, []);
+
+	React.useEffect(() => {
+		if (isPending || !isColorSchemeLoaded) return;
+
+		if (session) {
+			router.replace("/(tabs)/home");
+		} else {
+			router.replace("/(auth)");
+		}
+	}, [session, isPending, isColorSchemeLoaded, router]);
 
 	if (!isColorSchemeLoaded || isPending) {
 		return null;
@@ -68,12 +77,11 @@ export default function RootLayout() {
 				<ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
 					<StatusBar style={isDarkColorScheme ? "light" : "dark"} />
 					<GestureHandlerRootView style={{ flex: 1 }}>
-						<Stack>
-							{session ? (
-								<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-							) : (
-								<Stack.Screen name="(auth)/index" options={{ headerShown: false }} />
-							)}
+						<Stack screenOptions={{ headerShown: false }}>
+							<Stack.Screen name="(auth)/index" />
+							<Stack.Screen name="(tabs)" />
+							<Stack.Screen name="reset-password" />
+							<Stack.Screen name="+not-found" />
 						</Stack>
 					</GestureHandlerRootView>
 				</ThemeProvider>
