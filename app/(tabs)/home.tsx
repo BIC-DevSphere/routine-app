@@ -45,13 +45,13 @@ export default function Home() {
 	const days = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"]
 
 
-		function formatTime(time: string) {
+	function formatTime(time: string) {
 		const [hour, minute] = time.split(":");
 		let h = parseInt(hour, 10);
 		const ampm = h >= 12 ? "PM" : "AM";
 		h = h % 12 || 12;
 		return `${h}:${minute} ${ampm}`;
-}
+	}
 
 	return (
 		<Container>
@@ -99,15 +99,13 @@ export default function Home() {
 							<TouchableOpacity
 								key={index}
 								onPress={() => setActiveDayIndex(index)}
-								className={`flex-1 w-10 py-6 p-1 border rounded-xl items-center justify-center shadow-sm ${
-									isActiveDay
+								className={`flex-1 w-10 py-6 p-1 border rounded-xl items-center justify-center shadow-sm ${isActiveDay
 										? "bg-primary border-primary"
 										: "border-gray-300 bg-background"
-								}`}
+									}`}
 							>
-								<Text className={`text-sm font-medium capitalize ${
-									isActiveDay ? "text-primary-foreground" : "text-foreground"
-								}`}>
+								<Text className={`text-sm font-medium capitalize ${isActiveDay ? "text-primary-foreground" : "text-foreground"
+									}`}>
 									{day}
 								</Text>
 							</TouchableOpacity>
@@ -118,44 +116,44 @@ export default function Home() {
 				<View className="px-4 pt-6">
 					{routineData &&
 						routineData.week.every((day: WeekDay) => day.slots.length === 0) ? (
+						<View className="px-4 py-20">
+							<Text className="text-center text-muted-foreground text-lg">
+								No classes scheduled this week
+							</Text>
+						</View>
+					) : (
+						todayRoutine?.slots.length ? (
+							todayRoutine.slots.map((slot, idx) => (
+								<View
+									key={idx}
+									className="mb-4 p-4 rounded-lg border border-primary/20 bg-primary/5"
+								>
+									<Text className="text-lg font-semibold text-foreground mb-1">
+										{slot.moduleName} ({slot.moduleCode})
+									</Text>
+									<Text className="text-base text-muted-foreground">
+										{slot.classType} | {formatTime(slot.startTime)} - {formatTime(slot.endTime)}
+									</Text>
+									{slot.room && (
+										<Text className="text-sm text-muted-foreground mt-1">
+											Room: {slot.room}
+										</Text>
+									)}
+									{slot.teacher && (
+										<Text className="text-sm text-muted-foreground mt-1">
+											Teacher: {slot.teacher}
+										</Text>
+									)}
+								</View>
+							))
+						) : (
 							<View className="px-4 py-20">
 								<Text className="text-center text-muted-foreground text-lg">
-									No classes scheduled this week 
+									No classes scheduled for this day
 								</Text>
 							</View>
-						) : (
-							todayRoutine?.slots.length ? (
-								todayRoutine.slots.map((slot, idx) => (
-									<View
-										key={idx}
-										className="mb-4 p-4 rounded-lg border border-primary/20 bg-primary/5"
-									>
-										<Text className="text-lg font-semibold text-foreground mb-1">
-											{slot.moduleName} ({slot.moduleCode})
-										</Text>
-										<Text className="text-base text-muted-foreground">
-											{slot.classType} | {formatTime(slot.startTime)} - {formatTime(slot.endTime)}
-										</Text>
-										{slot.room && (
-											<Text className="text-sm text-muted-foreground mt-1">
-												Room: {slot.room}
-											</Text>
-										)}
-										{slot.teacher && (
-											<Text className="text-sm text-muted-foreground mt-1">
-												Teacher: {slot.teacher}
-											</Text>
-										)}
-									</View>
-								))
-							) : (
-								<View className="px-4 py-20">
-									<Text className="text-center text-muted-foreground text-lg">
-										No classes scheduled for this day
-									</Text>
-								</View>
-							)
-						)}
+						)
+					)}
 				</View>
 			</ScrollView>
 		</Container>

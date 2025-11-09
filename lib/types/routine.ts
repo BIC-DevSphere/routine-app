@@ -3,11 +3,14 @@ export interface Slot {
 	endTime: string;
 	moduleCode: string;
 	moduleName: string;
-	classType: "Lecture" | "Tutorial" | "Workshop";
+	classType: string;
 	room: string;
 	teacher: string;
 	isActive: boolean;
+	isJoinedClass: boolean;
+	joinedGroups?: string[];
 }
+
 
 export interface WeekDay {
 	day: "sun" | "mon" | "tue" | "wed" | "thu" | "fri" | "sat";
