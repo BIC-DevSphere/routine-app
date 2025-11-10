@@ -152,8 +152,7 @@ export default function Home() {
                   {slot.moduleName} ({slot.moduleCode})
                 </Text>
                 <Text className="text-base text-muted-foreground">
-                  {slot.classType} | {formatTime(slot.startTime)} -{" "}
-                  {formatTime(slot.endTime)}
+                  {slot.classType} | {formatTime(slot.startTime)} - {formatTime(slot.endTime)}
                 </Text>
                 {slot.room && (
                   <Text className="text-sm text-muted-foreground mt-1">
@@ -162,7 +161,12 @@ export default function Home() {
                 )}
                 {slot.teacher && (
                   <Text className="text-sm text-muted-foreground mt-1">
-                    Teacher: {slot.teacher}
+                    Teacher: {slot.teacher.name}
+                  </Text>
+                )}
+                {slot.joinedGroups && slot.joinedGroups.length > 0 && (
+                  <Text className="text-sm text-muted-foreground mt-1">
+                    Group: {slot.joinedGroups.join(" + ")}
                   </Text>
                 )}
               </View>
