@@ -5,7 +5,10 @@ export interface Slot {
 	moduleName: string;
 	classType: string;
 	room: string;
-	teacher: string;
+	teacher: {
+		name: string;
+		email: string;
+	};
 	isActive: boolean;
 	isJoinedClass: boolean;
 	joinedGroups?: string[];
