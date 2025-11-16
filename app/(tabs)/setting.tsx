@@ -4,13 +4,20 @@ import { ProfileEditModal } from "@/components/profile-edit";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LogoutButton } from "@/components/logout-button";
 import { ScrollView, Text, View } from "react-native";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { authClient } from "@/lib/auth-client";
 
 export default function Setting() {
+  const { data: session } = authClient.useSession();
+  const [displayName, setDisplayName] = useState(session?.user?.name || "");
   const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
 
-  const handleProfileUpdated = () => {
-	// Handled by better-auth automatically
+  useEffect(() => {
+    setDisplayName(session?.user?.name || "");
+  }, [session?.user?.name]);
+
+  const handleProfileUpdated = (newName: string) => {
+    setDisplayName(newName);
   };
 
   return (
@@ -26,7 +33,10 @@ export default function Setting() {
         </View>
 
         <View className="pt-6">
-          <ProfileDisplay onEditPress={() => setIsProfileModalVisible(true)} />
+          <ProfileDisplay
+            name={displayName}
+            onEditPress={() => setIsProfileModalVisible(true)}
+          />
           <ThemeToggle />
           <LogoutButton />
         </View>

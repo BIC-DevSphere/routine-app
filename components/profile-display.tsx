@@ -3,12 +3,14 @@ import { authClient } from "@/lib/auth-client";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import {ProfileDisplayProps} from "@/lib/types/profile"
 
-export function ProfileDisplay({ onEditPress }: ProfileDisplayProps) {
+export function ProfileDisplay({ onEditPress, name }: ProfileDisplayProps) {
   const { data: session } = authClient.useSession();
 
   if (!session?.user) {
     return null;
   }
+
+  const newName = name || session.user.name
 
   return (
     <TouchableOpacity
@@ -18,7 +20,7 @@ export function ProfileDisplay({ onEditPress }: ProfileDisplayProps) {
       <View className="flex-row items-center justify-between">
         <View className="flex-1">
           <Text className="text-lg font-semibold text-foreground mb-1">
-            {session.user.name}
+            {newName}
           </Text>
           <Text className="text-base text-muted-foreground">
             {session.user.email}

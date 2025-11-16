@@ -32,8 +32,8 @@ export function ProfileEditModal({
 
     setIsLoading(true);
     try {
-      await updateProfile({ name: name.trim() });
-      onProfileUpdated();
+      const data = await updateProfile({ name: name.trim() });
+      onProfileUpdated(data.name)
       onClose();
     } catch (error) {
       console.error("Failed to update profile:", error);
@@ -46,10 +46,6 @@ export function ProfileEditModal({
     setName(session?.user?.name || "");
     onClose();
   };
-
-  useEffect(() => {
-    setName(session?.user?.name || "");
-  }, [session]);
 
   return (
     <Modal
