@@ -90,7 +90,7 @@ export default function SignUp() {
             <Picker
                 selectedValue={selectedGroup}
                 onValueChange={(itemValue) => setSelectedGroup(itemValue)}
-                className="p-5"
+                style={{ color: '#ddd' }}
             >
                 <Picker.Item label="Select Group" value="" enabled={false} />
                 {groups.map((e)=>(

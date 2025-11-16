@@ -11,10 +11,11 @@ export interface Profile {
 
 export interface ProfileDisplayProps {
   onEditPress: () => void;
+  name?: string
 }
 
 export interface ProfileEditModalProps {
   visible: boolean;
   onClose: () => void;
-  onProfileUpdated: () => void;
+  onProfileUpdated: (newName: string) => void;
 }
