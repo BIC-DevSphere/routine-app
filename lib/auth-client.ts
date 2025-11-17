@@ -15,8 +15,16 @@ type AuthConfig = {
     };
 };
 
+const SERVER_URL = process.env.EXPO_PUBLIC_SERVER_URL || "https://routine-backend-ia1t.onrender.com";
+
+if (!SERVER_URL) {
+    throw new Error(
+        "EXPO_PUBLIC_SERVER_URL is missing! Check eas.json and rebuild the app."
+    );
+}
+
 export const authClient = createAuthClient({
-    baseURL: `${process.env.EXPO_PUBLIC_SERVER_URL}/api/auth`, 
+    baseURL: `${SERVER_URL}/api/auth`,
     plugins: [
         expoClient({
             scheme: "routine-app",
@@ -25,5 +33,4 @@ export const authClient = createAuthClient({
         }),
         inferAdditionalFields<AuthConfig>()
     ],
-    
 });

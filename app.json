@@ -5,11 +5,13 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
+    "jsEngine" : "hermes",
     "scheme": "routine-app",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.devsphere.routineapp"
     },
     "android": {
       "adaptiveIcon": {
@@ -51,9 +53,9 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "11f3a48d-3a49-4167-846e-49daf38b2d03"
+        "projectId": "57ef7f6c-5fc1-457a-96af-95ecc3e1ccd1"
       }
     },
-    "owner": "nyqedovugu"
+    "owner": "rojyqaxyl"
   }
 }
