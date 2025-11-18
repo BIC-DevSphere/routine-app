@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { authClient } from "@/lib/auth-client";
 import { useState, useEffect } from "react";
@@ -47,7 +47,7 @@ export default function Header() {
       <View className="flex-row items-start justify-between">
         <View className="gap-2">
           <View className="flex-row items-center gap-2">
-            <Ionicons name={getIconName()} size={18} color="#fff" />
+            <Ionicons name={getIconName()} size={18} className="text-white" />
             <Text className="text-white text-sm">{greeting}</Text>
           </View>
           <Text className="text-white text-2xl font-semibold">{name}</Text>
