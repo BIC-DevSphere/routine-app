@@ -10,9 +10,11 @@
   .input-text {
     @apply flex-1 text-foreground;
   }
-}
 
-@layer base {
+  .row-center-gap {
+    @apply flex-row items-center gap-2
+  }
+  
   :root {
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;

@@ -5,12 +5,14 @@ import {
   View,
   ActivityIndicator,
   RefreshControl,
+  TouchableOpacity,
 } from "react-native";
 import { authClient } from "@/lib/auth-client";
 import { useState, useEffect } from "react";
 import { WeekDay } from "@/lib/types/routine";
 import { useRoutine } from "@/lib/api/routine";
-import { Picker } from "@react-native-picker/picker";
+import Header from "@/components/header";
+import { RoutineCard } from "@/components/routine-card";
 
 export default function Home() {
   const { isRefetching, isPending } = authClient.useSession();
@@ -49,22 +51,17 @@ export default function Home() {
     );
   }
 
-  const days = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-  ];
+  const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
 
-  function formatTime(time: string) {
-    const [hour, minute] = time.split(":");
-    let h = parseInt(hour, 10);
-    const ampm = h >= 12 ? "PM" : "AM";
-    h = h % 12 || 12;
-    return `${h}:${minute} ${ampm}`;
-  }
+  const today = new Date();
+  const dayOfWeek = today.getDay();
+  const sunday = new Date(today);
+  sunday.setDate(today.getDate() - dayOfWeek);
+  const weekDates = days.map((_, index) => {
+    const date = new Date(sunday);
+    date.setDate(sunday.getDate() + index);
+    return date.getDate();
+  });
 
   return (
     <Container>
@@ -74,21 +71,42 @@ export default function Home() {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
-        <View className="px-4 pt-6 pb-4 flex-row items-center justify-between">
-          <View className="gap-4">
-            <Text className="text-2xl text-foreground">Hello 🙋</Text>
-            <Text className="text-2xl text-foreground">Good Day</Text>
-          </View>
-          <View className="w-40 border border-gray-300 rounded-lg bg-primary">
-            <Picker
-              selectedValue={activeDayIndex}
-              onValueChange={(itemValue) => setActiveDayIndex(itemValue)}
-              style={{ color: "#fff" }}
-            >
-              {days.map((day, index) => (
-                <Picker.Item key={index} label={day} value={index} />
-              ))}
-            </Picker>
+        <Header />
+        <View className="p-4">
+          <View className="p-2 flex w-full flex-row gap-4 shadow-md shadow-border rounded-xl">
+            {days.map((day, index) => {
+              const isActiveDay = index === activeDayIndex;
+              return (
+                <TouchableOpacity
+                  key={index}
+                  onPress={() => setActiveDayIndex(index)}
+                  className={`flex-1 py-3 px-1 rounded-xl items-center justify-center shadow-sm ${
+                    isActiveDay ? "bg-primary shadow-md" : "bg-background"
+                  }`}
+                >
+                  <View className="items-center gap-1">
+                    <Text
+                      className={`text-xs font-medium capitalize ${
+                        isActiveDay
+                          ? "text-primary-foreground"
+                          : "text-foreground"
+                      }`}
+                    >
+                      {day}
+                    </Text>
+                    <Text
+                      className={`text-sm ${
+                        isActiveDay
+                          ? "text-primary-foreground font-semibold"
+                          : "text-muted-foreground"
+                      }`}
+                    >
+                      {weekDates[index]}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              );
+            })}
           </View>
         </View>
 
@@ -115,7 +133,7 @@ export default function Home() {
         )}
         <View className="px-4 pt-6 gap-4">
           <Text className="text-xl font-bold text-foreground">
-            Your Schedule
+            Today's Classes
           </Text>
           {routineData &&
           routineData.week.every((day: WeekDay) => day.slots.length === 0) ? (
@@ -126,33 +144,7 @@ export default function Home() {
             </View>
           ) : todayRoutine?.slots.length ? (
             todayRoutine.slots.map((slot, idx) => (
-              <View
-                key={idx}
-                className="p-4 rounded-lg border border-primary/20 bg-primary/5"
-              >
-                <Text className="text-lg font-semibold text-foreground mb-1">
-                  {slot.moduleName} ({slot.moduleCode})
-                </Text>
-                <Text className="text-base text-muted-foreground">
-                  {slot.classType}: {formatTime(slot.startTime)} -{" "}
-                  {formatTime(slot.endTime)}
-                </Text>
-                {slot.room && (
-                  <Text className="text-sm text-muted-foreground mt-1">
-                    Room: {slot.room}
-                  </Text>
-                )}
-                {slot.teacher && (
-                  <Text className="text-sm text-muted-foreground mt-1">
-                    Teacher: {slot.teacher.name}
-                  </Text>
-                )}
-                {slot.joinedGroups && slot.joinedGroups.length > 0 && (
-                  <Text className="text-sm text-muted-foreground mt-1">
-                    Group: {slot.joinedGroups.join(" + ")}
-                  </Text>
-                )}
-              </View>
+              <RoutineCard key={idx} slot={slot} />
             ))
           ) : (
             <View className="px-4 py-20">
