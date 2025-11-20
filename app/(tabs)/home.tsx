@@ -73,7 +73,7 @@ export default function Home() {
       >
         <Header />
         <View className="p-4">
-          <View className="p-2 flex w-full flex-row gap-4 shadow-md shadow-border rounded-xl">
+          <View className="p-2 bg-secondary/70 flex w-full flex-row gap-4 shadow-md shadow-border rounded-xl">
             {days.map((day, index) => {
               const isActiveDay = index === activeDayIndex;
               return (

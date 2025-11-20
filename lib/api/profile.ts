@@ -32,7 +32,6 @@ export function useProfile() {
   });
 }
 
-// Updating doesn't work currently
 export async function updateProfile(profileData: {
   name?: string;
 }): Promise<Profile> {

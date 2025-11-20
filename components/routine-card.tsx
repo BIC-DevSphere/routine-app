@@ -1,7 +1,7 @@
 import { View, Text } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import type { Slot } from "@/lib/types/routine";
-import { formatTime } from "@/lib/utils/time";
+import { formatTime } from "@/lib/utils/dateTime";
 
 interface RoutineCardProps {
   slot: Slot;
@@ -9,7 +9,7 @@ interface RoutineCardProps {
 
 export function RoutineCard({ slot }: RoutineCardProps) {
   return (
-    <View className="p-4 rounded-xl border border-secondary shadow-md shadow-border gap-2">
+    <View className="p-4 bg-background rounded-xl border border-secondary shadow-md shadow-border gap-2">
       <View className="row-center-gap">
         <Text className="bg-primary/10 text-primary font-semibold px-2 py-0.5 rounded-md text-sm">
           {slot.moduleCode}
@@ -22,14 +22,14 @@ export function RoutineCard({ slot }: RoutineCardProps) {
         {slot.moduleName}
       </Text>
       <View className="row-center-gap">
-        <Ionicons name="time-outline" size={16} className="text-muted-foreground" />
+        <Ionicons name="time-outline" size={16} style={{color: '#888'}} />
         <Text className="text-sm text-muted-foreground">
           {formatTime(slot.startTime)} - {formatTime(slot.endTime)}
         </Text>
       </View>
       {slot.room && (
         <View className="row-center-gap">
-          <Ionicons name="location-outline" size={16} className="text-muted-foreground" />
+          <Ionicons name="location-outline" size={16} style={{color: '#888'}} />
           <Text className="text-sm text-muted-foreground">
             {slot.room}
           </Text>
@@ -38,7 +38,7 @@ export function RoutineCard({ slot }: RoutineCardProps) {
       {slot.teacher && (
         <View className="flex-row items-center justify-between">
           <View className="row-center-gap">
-            <Ionicons name="person-outline" size={16} className="text-muted-foreground" />
+            <Ionicons name="person-outline" size={16} style={{color: '#888'}} />
             <Text className="text-sm text-muted-foreground">
               {slot.teacher.name}
             </Text>
