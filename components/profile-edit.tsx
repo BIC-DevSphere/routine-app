@@ -7,25 +7,26 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from "react-native";
-import { authClient } from "@/lib/auth-client";
-import { updateProfile } from "@/lib/api/profile";
+import { updateProfile, useProfile } from "@/lib/api/profile";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { ProfileEditModalProps } from "@/lib/types/profile";
+import { useQueryClient } from "@tanstack/react-query";
 
 export function ProfileEditModal({
   visible,
   onClose,
   onProfileUpdated,
 }: ProfileEditModalProps) {
-  const { data: session } = authClient.useSession();
-  const [name, setName] = useState(session?.user?.name || "");
+  const { data: profile } = useProfile();
+  const [name, setName] = useState(profile?.name || "");
   const [isLoading, setIsLoading] = useState(false);
+  const queryClient = useQueryClient();
 
   useEffect(() => {
-    if (visible && session?.user?.name) {
-      setName(session.user.name);
+    if (visible && profile?.name) {
+      setName(profile.name);
     }
-  }, [visible, session?.user?.name]);
+  }, [visible, profile?.name]);
 
   const handleSave = async () => {
     if (!name.trim()) return;
@@ -33,6 +34,7 @@ export function ProfileEditModal({
     setIsLoading(true);
     try {
       const data = await updateProfile({ name: name.trim() });
+      queryClient.invalidateQueries({ queryKey: ["profile", profile?.id] })
       onProfileUpdated(data.name)
       onClose();
     } catch (error) {
@@ -43,7 +45,7 @@ export function ProfileEditModal({
   };
 
   const handleClose = () => {
-    setName(session?.user?.name || "");
+    setName(profile?.name || "");
     onClose();
   };
 

@@ -1,16 +1,14 @@
 import { TouchableOpacity, Text, View } from "react-native";
-import { authClient } from "@/lib/auth-client";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import {ProfileDisplayProps} from "@/lib/types/profile"
+import { useProfile } from "@/lib/api/profile";
 
-export function ProfileDisplay({ onEditPress, name }: ProfileDisplayProps) {
-  const { data: session } = authClient.useSession();
+export function ProfileDisplay({ onEditPress }: ProfileDisplayProps) {
+  const { data: profile } = useProfile();
 
-  if (!session?.user) {
+  if (!profile) {
     return null;
   }
-
-  const newName = name || session.user.name
 
   return (
     <TouchableOpacity
@@ -20,10 +18,10 @@ export function ProfileDisplay({ onEditPress, name }: ProfileDisplayProps) {
       <View className="flex-row items-center justify-between">
         <View className="flex-1">
           <Text className="text-lg font-semibold text-foreground mb-1">
-            {newName}
+            {profile.name}
           </Text>
           <Text className="text-base text-muted-foreground">
-            {session.user.email}
+            {profile.email}
           </Text>
         </View>
         <Ionicons name="pencil" size={24} color="#666" />

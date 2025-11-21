@@ -11,7 +11,6 @@ export interface Profile {
 
 export interface ProfileDisplayProps {
   onEditPress: () => void;
-  name?: string
 }
 
 export interface ProfileEditModalProps {
