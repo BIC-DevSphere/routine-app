@@ -11,7 +11,7 @@ import "../global.css";
 import { NAV_THEME } from "@/lib/constants";
 import React, { useRef } from "react";
 import { useColorScheme } from "@/lib/use-color-scheme";
-import { Platform } from "react-native";
+import { Platform, View, Text, ActivityIndicator } from "react-native";
 import { setAndroidNavigationBar } from "@/lib/android-navigation-bar";
 import { authClient } from "@/lib/auth-client";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -62,9 +62,14 @@ export default function RootLayout() {
 			router.replace("/(auth)");
 		}
 	}, [session, isPending, isColorSchemeLoaded, router]);
-
+	
 	if (!isColorSchemeLoaded || isPending) {
-		return null;
+		return (
+			<View className="flex flex-1 justify-center items-center bg-background gap-5">
+				<ActivityIndicator size="large" className="text-primary" />
+				<Text className="text-foreground">Loading...</Text>
+			</View>
+		);
 	}
 
 	return (
