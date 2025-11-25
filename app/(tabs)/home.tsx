@@ -13,6 +13,7 @@ import { WeekDay } from "@/lib/types/routine";
 import { useRoutine } from "@/lib/api/routine";
 import Header from "@/components/header";
 import { RoutineCard } from "@/components/routine-card";
+import NextClassHeader from "@/components/NextClassHeader";
 
 export default function Home() {
   const { isRefetching, isPending } = authClient.useSession();
@@ -71,35 +72,42 @@ export default function Home() {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
-        <Header />
+        <View className="relative pb-32">
+          {/* Header at base layer */}
+          <Header />
+
+          {/* Floating NextClassHeader */}
+          <View className="absolute left-0 right-0 bottom-2  z-20">
+            <NextClassHeader />
+          </View>
+        </View>
+
         <View className="p-4">
-          <View className="p-2 bg-secondary/70 flex w-full flex-row gap-4 shadow-md shadow-border rounded-xl">
+
+          <View className="p-2 bg-background flex w-full flex-row gap-4 shadow-xl shadow-black/50 border-border border dark:shadow-none dark:border-2 rounded-xl">
             {days.map((day, index) => {
               const isActiveDay = index === activeDayIndex;
               return (
                 <TouchableOpacity
                   key={index}
                   onPress={() => setActiveDayIndex(index)}
-                  className={`flex-1 py-3 px-1 rounded-xl items-center justify-center shadow-sm ${
-                    isActiveDay ? "bg-primary shadow-md" : "bg-background"
-                  }`}
+                  className={`flex-1 py-3 px-1 rounded-xl items-center justify-center shadow-sm ${isActiveDay ? "bg-primary shadow-md" : "bg-background"
+                    }`}
                 >
                   <View className="items-center gap-1">
                     <Text
-                      className={`text-xs font-medium capitalize ${
-                        isActiveDay
-                          ? "text-primary-foreground"
-                          : "text-foreground"
-                      }`}
+                      className={`font-medium capitalize ${isActiveDay
+                          ? "text-primary-foreground text-sm"
+                          : "text-foreground/50 text-xs"
+                        }`}
                     >
                       {day}
                     </Text>
                     <Text
-                      className={`text-sm ${
-                        isActiveDay
-                          ? "text-primary-foreground font-semibold"
+                      className={` ${isActiveDay
+                          ? "text-primary-foreground font-semibold text-lg"
                           : "text-muted-foreground"
-                      }`}
+                        }`}
                     >
                       {weekDates[index]}
                     </Text>
@@ -131,12 +139,12 @@ export default function Home() {
             </View>
           </View>
         )}
-        <View className="px-4 pt-6 gap-4">
+        <View className="px-4 gap-4">
           <Text className="text-xl font-bold text-foreground">
             Today's Classes
           </Text>
           {routineData &&
-          routineData.week.every((day: WeekDay) => day.slots.length === 0) ? (
+            routineData.week.every((day: WeekDay) => day.slots.length === 0) ? (
             <View className="px-4 py-20">
               <Text className="text-center text-muted-foreground text-lg">
                 No classes scheduled this week

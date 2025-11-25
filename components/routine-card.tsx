@@ -9,7 +9,7 @@ interface RoutineCardProps {
 
 export function RoutineCard({ slot }: RoutineCardProps) {
   return (
-    <View className="p-4 bg-background rounded-xl border border-secondary shadow-md shadow-border gap-2">
+    <View className="p-4 bg-background rounded-xl dark:border-2 dark:shadow-none border-border border shadow-xl shadow-black/40 gap-2">
       <View className="row-center-gap">
         <Text className="bg-primary/10 text-primary font-semibold px-2 py-0.5 rounded-md text-sm">
           {slot.moduleCode}
