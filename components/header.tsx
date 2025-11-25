@@ -1,5 +1,5 @@
 import { View, Text } from "react-native";
-import Ionicons from "react-native-vector-icons/Ionicons";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { useState, useEffect } from "react";
 import { getFullDayDate, getGreeting, getIconName } from "@/lib/utils/dateTime";
 import { useProfile } from "@/lib/api/profile";

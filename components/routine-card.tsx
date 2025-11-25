@@ -1,5 +1,5 @@
 import { View, Text } from "react-native";
-import Ionicons from "react-native-vector-icons/Ionicons";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import type { Slot } from "@/lib/types/routine";
 import { formatTime } from "@/lib/utils/dateTime";
 
