@@ -4,7 +4,7 @@
 
 @layer components {
   .input-row {
-    @apply flex-row items-center bg-input border border-border rounded-xl px-4 py-2;
+    @apply row-center-gap bg-input border border-border rounded-xl px-4 py-2;
   }
 
   .input-text {
@@ -14,7 +14,11 @@
   .row-center-gap {
     @apply flex-row items-center gap-2;
   }
-  
+
+  .auth-button {
+    @apply bg-primary rounded-xl p-4 mt-4;
+  }
+
   :root {
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;

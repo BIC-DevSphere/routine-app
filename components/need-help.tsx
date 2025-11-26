@@ -3,7 +3,7 @@ import { View, TextInput, Text, TouchableOpacity, Modal } from "react-native";
 import { authClient } from "@/lib/auth-client";
 import { useColorScheme } from "@/lib/use-color-scheme";
 import ToastManager, { Toast } from 'toastify-react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 interface NeedHelpProps {
     visible: boolean;
