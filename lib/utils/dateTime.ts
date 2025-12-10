@@ -3,7 +3,6 @@ export function getFullDayDate() {
     weekday: "long",
     month: "long",
     day: "numeric",
-    year: "numeric",
   });
 }
 
