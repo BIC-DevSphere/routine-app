@@ -24,7 +24,7 @@ export function getGreeting() {
 
 export function getIconName() {
   const h = new Date().getHours();
-  if (h < 12) return "sunny";
-  if (h < 17) return "partly-sunny";
-  return "moon";
+  if (h < 12) return "sunny-outline";
+  if (h < 17) return "partly-sunny-outline";
+  return "moon-outline";
 }

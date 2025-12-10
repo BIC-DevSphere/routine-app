@@ -53,9 +53,13 @@ export default function Support() {
                                 }}
                                 dropdownIconColor={isDarkColorScheme ? "#FFFFFF" : "#000000"}
                             >
-                                <Picker.Item label="Report a Bug" value="bug" />
-                                <Picker.Item label="Feature Request" value="feature" />
-                                <Picker.Item label="General Inquiry" value="general" />
+                                <Picker.Item label="Missing Class/Routine" value="ROUTINE_MISSING" />
+                                <Picker.Item label="Incorrect Time" value="TIME_INCORRECT" />
+                                <Picker.Item label="Incorrect Room" value="ROOM_INCORRECT" />
+                                <Picker.Item label="Incorrect Teacher" value="TEACHER_INCORRECT" />
+                                <Picker.Item label="Class Cancelled" value="CLASS_MISSING" />
+                                <Picker.Item label="Other" value="OTHER" />
+
                             </Picker>
                         </View>
                     </View>
