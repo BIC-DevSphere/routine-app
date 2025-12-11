@@ -57,7 +57,7 @@ export function ProfileEditModal({
       onRequestClose={handleClose}
     >
       <View className="flex-1 justify-end bg-black/50">
-        <View className="bg-background rounded-t-3xl p-6">
+        <View className="bg-background rounded-t-3xl p-6 border-x border-t border-border">
           <View className="flex-row items-center justify-between mb-6">
             <Text className="text-xl font-bold text-foreground">
               Edit Profile
@@ -83,9 +83,9 @@ export function ProfileEditModal({
           <View className="flex-row gap-3">
             <TouchableOpacity
               onPress={handleClose}
-              className="flex-1 p-3 rounded-lg border border-primary/20 bg-background"
+              className="flex-1 p-3 rounded-lg bg-[#ef4444]"
             >
-              <Text className="text-center text-base font-medium text-foreground">
+              <Text className="text-center text-base font-medium text-primary-foreground">
                 Cancel
               </Text>
             </TouchableOpacity>

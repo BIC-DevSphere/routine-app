@@ -9,47 +9,62 @@ interface RoutineCardProps {
 
 export function RoutineCard({ slot }: RoutineCardProps) {
   return (
-    <View className="p-4 bg-background rounded-xl dark:border-2 dark:shadow-none border-border border shadow-xl shadow-black/40 gap-2">
-      <View className="row-center-gap">
-        <Text className="bg-primary/10 text-primary font-semibold px-2 py-0.5 rounded-md text-sm">
-          {slot.moduleCode}
-        </Text>
-        <Text className="text-sm text-muted-foreground font-medium">
-          {slot.classType}
-        </Text>
-      </View>
-      <Text className="text-lg font-semibold text-foreground">
-        {slot.moduleName}
-      </Text>
-      <View className="row-center-gap">
-        <Ionicons name="time-outline" size={16} style={{color: '#888'}} />
-        <Text className="text-sm text-muted-foreground">
-          {formatTime(slot.startTime)} - {formatTime(slot.endTime)}
-        </Text>
-      </View>
-      {slot.room && (
+    <View className="p-4 bg-secondary/50 rounded-xl border border-border gap-4">
+      <View className="gap-2">
         <View className="row-center-gap">
-          <Ionicons name="location-outline" size={16} style={{color: '#888'}} />
-          <Text className="text-sm text-muted-foreground">
-            {slot.room}
+          <Text className="bg-primary/10 text-primary font-semibold px-2 py-0.5 rounded-md text-sm">
+            {slot.moduleCode}
+          </Text>
+          <Text className="text-sm text-muted-foreground font-medium">
+            {slot.classType}
           </Text>
         </View>
-      )}
-      {slot.teacher && (
-        <View className="flex-row items-center justify-between">
-          <View className="row-center-gap">
-            <Ionicons name="person-outline" size={16} style={{color: '#888'}} />
-            <Text className="text-sm text-muted-foreground">
-              {slot.teacher.name}
-            </Text>
-          </View>
-          {slot.joinedGroups && slot.joinedGroups.length > 0 && (
-            <Text className="ml-3 bg-secondary text-secondary-foreground px-2 py-0.5 rounded-lg text-xs">
-              {slot.joinedGroups.join(" + ")}
-            </Text>
-          )}
+        <Text className="text-lg font-semibold text-foreground">
+          {slot.moduleName}
+        </Text>
+        <View className="row-center-gap">
+          <Ionicons name="time-outline" size={16} style={{ color: "#888" }} />
+          <Text className="text-sm text-muted-foreground">
+            {formatTime(slot.startTime)} - {formatTime(slot.endTime)}
+          </Text>
         </View>
-      )}
+        {slot.room && (
+          <View className="row-center-gap">
+            <Ionicons
+              name="location-outline"
+              size={16}
+              style={{ color: "#888" }}
+            />
+            <Text className="text-sm text-muted-foreground">{slot.room}</Text>
+          </View>
+        )}
+        {slot.teacher && (
+          <View className="flex-row items-center justify-between">
+            <View className="row-center-gap">
+              <Ionicons
+                name="person-outline"
+                size={16}
+                style={{ color: "#888" }}
+              />
+              <Text className="text-sm text-muted-foreground">
+                {slot.teacher.name}
+              </Text>
+            </View>
+            {slot.joinedGroups && slot.joinedGroups.length > 0 && (
+              <Text className="ml-3 bg-secondary text-secondary-foreground px-2 py-0.5 rounded-lg text-xs">
+                {slot.joinedGroups.join(" + ")}
+              </Text>
+            )}
+          </View>
+        )}
+      </View>
+
+      <View className="h-[0.5px] bg-border"></View>
+      
+      <View className="flex-row gap-2 items-center animate-pulse">
+        <View className="w-1 h-1 p-1 rounded-full bg-green-500"></View>
+        <Text className="text-green-500">Happening Now</Text>
+      </View>
     </View>
   );
 }

@@ -8,7 +8,6 @@ export default function Header() {
   const { data: profile } = useProfile();
   const name = profile?.name;
   console.log(profile);
-  
 
   const [greeting, setGreeting] = useState(getGreeting());
   const [formattedDate, setFormattedDate] = useState(getFullDayDate());
@@ -23,15 +22,17 @@ export default function Header() {
   }, []);
 
   return (
-    <View className="bg-primary py-10 px-5">
-      <View className="flex-row items-start justify-between">
-        <View className="gap-2">
-          <View className="flex-row items-center gap-2">
-            <Ionicons name={getIconName()} size={18} style={{color: '#fff'}} />
-            <Text className="text-white text">{greeting}</Text>
-          </View>
-          <Text className="text-white text-3xl font-medium">{name}</Text>
-          <Text className="text-white text-sm">{formattedDate}</Text>
+    <View className="gap-4">
+      <Text className="text-foreground text-sm">{formattedDate}</Text>;
+      <Text className="text-foreground text-3xl">Today's Schedule</Text>
+      <View className="flex-row gap-4">
+        <View className="header-overview">
+          <Text className="text-foreground text-2xl">2</Text>
+          <Text className="text-foreground text-sm">Classes</Text>
+        </View>
+        <View className="header-overview">
+          <Text className="text-foreground text-2xl">5H 30M</Text>
+          <Text className="text-foreground text-sm">Total Time</Text>
         </View>
       </View>
     </View>

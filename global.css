@@ -19,6 +19,14 @@
     @apply bg-primary rounded-xl p-4 mt-4;
   }
 
+  .header-overview {
+    @apply bg-secondary/50 p-4 flex-1 gap-2 rounded-xl border border-border;
+  }
+
+  .settings-title {
+    @apply text-sm font-bold text-muted-foreground uppercase tracking-wider;
+  }
+
   :root {
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
