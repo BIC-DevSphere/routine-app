@@ -1,6 +1,7 @@
 import { createContext, useContext, ReactNode } from "react";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import { axiosInstance } from "@/lib/api/axiosInstance";
+import { API_ENDPOINTS } from "@/lib/api/apiConfig";
 
 type Group = { id: string; name: string };
 type GroupsContextType = {
@@ -15,19 +16,23 @@ const GroupsContext = createContext<GroupsContextType>({
   error: null,
 });
 
-const SERVER_URL = process.env.EXPO_PUBLIC_SERVER_URL;
-
 export function GroupsProvider({ children }: { children: ReactNode }) {
-  const { data: groups = [], isLoading: loading, error } = useQuery({
+  const {
+    data: groups = [],
+    isLoading: loading,
+    error,
+  } = useQuery({
     queryKey: ["groups"],
     queryFn: async () => {
-      const res = await axios.get(`${SERVER_URL}/api/groups`);      
+      const res = await axiosInstance.get(API_ENDPOINTS.groupsList);
       return res.data.data;
     },
   });
 
   return (
-    <GroupsContext.Provider value={{ groups, loading, error: error?.message || null }}>
+    <GroupsContext.Provider
+      value={{ groups, loading, error: error?.message || null }}
+    >
       {children}
     </GroupsContext.Provider>
   );

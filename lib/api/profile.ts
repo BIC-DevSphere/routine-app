@@ -1,10 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import type { Profile } from "@/lib/types/profile";
 import { authClient } from "../auth-client";
-
-const API_BASE_URL =
-  process.env.EXPO_PUBLIC_SERVER_URL || "http://localhost:3000";
+import { axiosInstance } from "./axiosInstance";
+import { API_ENDPOINTS } from "./apiConfig";
 
 export function useProfile() {
   const { data: session } = authClient.useSession();
@@ -15,15 +13,8 @@ export function useProfile() {
       if (!session) {
         throw new Error("No authentication session available");
       }
-      const cookies = authClient.getCookie();
 
-      const response = await axios.get(`${API_BASE_URL}/api/user/profile`, {
-        headers: {
-          "Content-Type": "application/json",
-          Cookie: cookies,
-        },
-        withCredentials: true,
-      });
+      const response = await axiosInstance.get(API_ENDPOINTS.userProfile);
       return response.data.data;
     },
     enabled: !!session?.user,
@@ -35,12 +26,9 @@ export function useProfile() {
 export async function updateProfile(profileData: {
   name?: string;
 }): Promise<Profile> {
-  const response = await axios.patch(
-    `${API_BASE_URL}/api/user/profile`,
+  const response = await axiosInstance.patch(
+    API_ENDPOINTS.userProfile,
     profileData,
-    {
-      withCredentials: true,
-    }
   );
   return response.data.data;
 }
