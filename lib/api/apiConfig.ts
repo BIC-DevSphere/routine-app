@@ -4,7 +4,7 @@ const API_BASE_URL =
 export const API_ENDPOINTS = {
   baseURL: API_BASE_URL,
 
-  userProfile: `${API_BASE_URL}/api/user/profile`,
-  routinesGroup: `${API_BASE_URL}/api/routines/group`,
-  groupsList: `${API_BASE_URL}/api/groups`,
+  userProfile: "/api/user/profile",
+  routinesGroup: "/api/routines/group",
+  groupsList: "/api/groups",
 };
