@@ -23,7 +23,7 @@ export default function Header() {
 
   return (
     <View className="gap-4">
-      <Text className="text-foreground text-sm">{formattedDate}</Text>;
+      <Text className="text-foreground text-sm">{formattedDate}</Text>
       <Text className="text-foreground text-3xl">Today's Schedule</Text>
       <View className="flex-row gap-4">
         <View className="header-overview">
