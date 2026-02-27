@@ -97,6 +97,6 @@ export default function RootLayout() {
 }
 
 const useIsomorphicLayoutEffect =
-	Platform.OS === "web" && typeof window === "undefined"
-		? React.useEffect
-		: React.useLayoutEffect;
+	Platform.OS === "web" && typeof window !== "undefined"
+		? React.useLayoutEffect
+		: React.useEffect;

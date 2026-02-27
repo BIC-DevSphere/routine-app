@@ -1,5 +1,4 @@
 import { Container } from "@/components/container";
-import { ProfileEditModal } from "@/components/profile-edit";
 import {
   ScrollView,
   Text,
@@ -8,7 +7,6 @@ import {
   Switch,
   Alert,
 } from "react-native";
-import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { useColorScheme } from "@/lib/use-color-scheme";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -17,14 +15,13 @@ import { useRouter } from "expo-router";
 
 export default function Setting() {
   const router = useRouter();
-  const { data: profile, refetch } = useProfile();
+  const { data: profile } = useProfile();
+  const { data: session } = authClient.useSession();
   const { colorScheme, toggleColorScheme } = useColorScheme();
-  const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
-  const isDark = colorScheme === "dark";
 
-  const handleProfileUpdated = async () => {
-    await refetch();
-  };
+  const displayName = profile?.name || session?.user?.name || "User";
+  const displayEmail = profile?.email || session?.user?.email;
+  const isDark = colorScheme === "dark";
 
   const handleLogout = async () => {
     Alert.alert("Logout", "Are you sure you want to logout?", [
@@ -129,31 +126,17 @@ export default function Setting() {
                   }`}
                 >
                   <Text className="text-2xl font-bold text-primary">
-                    {profile?.name?.[0]?.toUpperCase() || "U"}
+                    {displayName[0]?.toUpperCase() || "U"}
                   </Text>
                 </View>
                 <View className="flex-1 gap-1">
                   <Text className="text-xl font-bold text-foreground">
-                    {profile?.name || "User"}
+                    {displayName}
                   </Text>
                   <Text className="text-muted-foreground text-sm font-medium">
-                    {profile?.email}
+                    {displayEmail}
                   </Text>
                 </View>
-                <TouchableOpacity
-                  onPress={() => setIsProfileModalVisible(true)}
-                  className={`w-11 h-11 rounded-2xl items-center justify-center border ${
-                    isDark
-                      ? "bg-secondary border-border/50"
-                      : "bg-secondary/70 border-border/60"
-                  }`}
-                >
-                  <Ionicons
-                    name="pencil"
-                    size={18}
-                    color={isDark ? "#fff" : "#000"}
-                  />
-                </TouchableOpacity>
               </View>
 
               {/* Divider */}
@@ -250,11 +233,6 @@ export default function Setting() {
           </View>
         </View>
 
-        <ProfileEditModal
-          visible={isProfileModalVisible}
-          onClose={() => setIsProfileModalVisible(false)}
-          onProfileUpdated={handleProfileUpdated}
-        />
       </ScrollView>
     </Container>
   );
