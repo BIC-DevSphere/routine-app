@@ -129,24 +129,25 @@ export default function Home() {
               </Text>
             </View>
           )}
-          {routineData &&
-          routineData.week.every((day: WeekDay) => day.slots.length === 0) ? (
-            <View className="px-4 py-20">
-              <Text className="text-center text-muted-foreground text-lg">
-                No classes scheduled this week
-              </Text>
-            </View>
-          ) : todayRoutine?.slots.length ? (
-            todayRoutine.slots.map((slot, idx) => (
-              <RoutineCard key={idx} slot={slot} />
-            ))
-          ) : (
-            <View className="px-4 py-20">
-              <Text className="text-center text-muted-foreground text-lg">
-                No classes scheduled for this day
-              </Text>
-            </View>
-          )}
+          {!isLoading &&
+            (routineData &&
+            routineData.week.every((day: WeekDay) => day.slots.length === 0) ? (
+              <View className="px-4 py-20">
+                <Text className="text-center text-muted-foreground text-lg">
+                  No classes scheduled this week
+                </Text>
+              </View>
+            ) : todayRoutine?.slots.length ? (
+              todayRoutine.slots.map((slot, idx) => (
+                <RoutineCard key={idx} slot={slot} />
+              ))
+            ) : routineData ? (
+              <View className="px-4 py-20">
+                <Text className="text-center text-muted-foreground text-lg">
+                  No classes scheduled for this day
+                </Text>
+              </View>
+            ) : null)}
         </View>
       </ScrollView>
     </Container>
