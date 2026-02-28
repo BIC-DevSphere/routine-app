@@ -1,12 +1,14 @@
-import { TouchableOpacity, Text, View } from "react-native";
+import { TouchableOpacity, Text, View, ActivityIndicator } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import {ProfileDisplayProps} from "@/lib/types/profile"
 import { useProfile } from "@/lib/api/profile";
 
 export function ProfileDisplay({ onEditPress }: ProfileDisplayProps) {
-  const { data: profile } = useProfile();
+  const { data: profile, isLoading, isError } = useProfile();
 
-  if (!profile) {
+  if (isLoading) return <ActivityIndicator />;
+
+  if (isError || !profile) {
     return null;
   }
 

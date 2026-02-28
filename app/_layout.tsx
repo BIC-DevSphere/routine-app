@@ -18,7 +18,15 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { GroupsProvider } from "@/context/groupContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+	defaultOptions: {
+		queries: {
+			staleTime: 1000 * 60 * 5,
+			retry: 2,
+			refetchOnWindowFocus: false,
+		},
+	},
+});
 
 const LIGHT_THEME: Theme = {
 	...DefaultTheme,

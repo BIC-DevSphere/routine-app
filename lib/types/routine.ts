@@ -32,3 +32,9 @@ export interface RoutineResponse {
 	message: string;
 	data: RoutineData;
 }
+
+export interface RoutineContentProps {
+  isLoading: boolean;
+  routineData: RoutineData | undefined;
+  todayRoutine: WeekDay | undefined;
+}

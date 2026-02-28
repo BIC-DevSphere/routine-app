@@ -8,31 +8,21 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { authClient } from "@/lib/auth-client";
-import { useState, useEffect } from "react";
-import { WeekDay } from "@/lib/types/routine";
+import { useState, useMemo } from "react";
 import { useRoutine } from "@/lib/api/routine";
 import Header from "@/components/header";
-import { RoutineCard } from "@/components/routine-card";
+import { DAYS, getTodayIndex, getWeekDates } from "@/lib/utils/routine";
+import { RoutineContent } from "@/components/routine-content";
 
 export default function Home() {
-  const { isRefetching, isPending } = authClient.useSession();
+  const { isPending } = authClient.useSession();
   const [refreshing, setRefreshing] = useState(false);
-  const [activeDayIndex, setActiveDayIndex] = useState(() => {
-    const today = new Date().getDay();
-    return today === 6 ? 0 : today > 5 ? 0 : today;
-  });
-  const [todayRoutine, setTodayRoutine] = useState<WeekDay | undefined>(
-    undefined
-  );
+  const [activeDayIndex, setActiveDayIndex] = useState(getTodayIndex);
 
   const { data: routineData, isLoading, error, refetch } = useRoutine();
 
-  useEffect(() => {
-    if (routineData?.week) {
-      const routineForToday = routineData.week[activeDayIndex];
-      setTodayRoutine(routineForToday);
-    }
-  }, [activeDayIndex, routineData]);
+  const weekDates = useMemo(() => getWeekDates(), []);
+  const todayRoutine = routineData?.week[activeDayIndex];
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -40,7 +30,7 @@ export default function Home() {
     setRefreshing(false);
   };
 
-  if (isRefetching || isPending) {
+  if (isPending) {
     return (
       <Container>
         <View className="flex-1 justify-center items-center">
@@ -50,18 +40,6 @@ export default function Home() {
       </Container>
     );
   }
-
-  const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
-
-  const today = new Date();
-  const dayOfWeek = today.getDay();
-  const sunday = new Date(today);
-  sunday.setDate(today.getDate() - dayOfWeek);
-  const weekDates = days.map((_, index) => {
-    const date = new Date(sunday);
-    date.setDate(sunday.getDate() + index);
-    return date.getDate();
-  });
 
   return (
     <Container>
@@ -75,7 +53,7 @@ export default function Home() {
           <Header />
 
           <View className="p-2 bg-secondary/50 flex w-full flex-row gap-4 border border-border rounded-xl">
-            {days.map((day, index) => {
+            {DAYS.map((day, index) => {
               const isActiveDay = index === activeDayIndex;
               return (
                 <TouchableOpacity
@@ -129,25 +107,11 @@ export default function Home() {
               </Text>
             </View>
           )}
-          {!isLoading &&
-            (routineData &&
-            routineData.week.every((day: WeekDay) => day.slots.length === 0) ? (
-              <View className="px-4 py-20">
-                <Text className="text-center text-muted-foreground text-lg">
-                  No classes scheduled this week
-                </Text>
-              </View>
-            ) : todayRoutine?.slots.length ? (
-              todayRoutine.slots.map((slot, idx) => (
-                <RoutineCard key={idx} slot={slot} />
-              ))
-            ) : routineData ? (
-              <View className="px-4 py-20">
-                <Text className="text-center text-muted-foreground text-lg">
-                  No classes scheduled for this day
-                </Text>
-              </View>
-            ) : null)}
+          <RoutineContent
+            isLoading={isLoading}
+            routineData={routineData}
+            todayRoutine={todayRoutine}
+          />
         </View>
       </ScrollView>
     </Container>

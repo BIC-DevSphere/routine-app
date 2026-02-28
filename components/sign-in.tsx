@@ -32,9 +32,9 @@ export default function SignIn() {
 
     if (result.error) {
       Toast.error(
-        result.error.message
+        result.error.message?.includes("verify")
           ? "Check Email to Verify First"
-          : "Invalid credentials"
+          : result.error.message || "Invalid credentials"
       );
       console.log("Error while logging in: ", result.error.message);
       console.log(result.error);
