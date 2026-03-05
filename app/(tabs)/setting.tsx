@@ -3,15 +3,14 @@ import {
   ScrollView,
   Text,
   View,
-  TouchableOpacity,
   Switch,
   Alert,
 } from "react-native";
 import { authClient } from "@/lib/auth-client";
 import { useColorScheme } from "@/lib/use-color-scheme";
-import Ionicons from "@expo/vector-icons/Ionicons";
 import { useProfile } from "@/lib/api/profile";
 import { useRouter } from "expo-router";
+import { SettingItem } from "@/components/setting-item";
 
 export default function Setting() {
   const router = useRouter();
@@ -38,75 +37,6 @@ export default function Setting() {
       },
     ]);
   };
-
-  const SettingItem = ({
-    icon,
-    label,
-    value,
-    onPress,
-    showChevron = true,
-    isDestructive = false,
-    rightElement,
-    isLast = false,
-  }: {
-    icon: keyof typeof Ionicons.glyphMap;
-    label: string;
-    value?: string;
-    onPress?: () => void;
-    showChevron?: boolean;
-    isDestructive?: boolean;
-    rightElement?: React.ReactNode;
-    isLast?: boolean;
-  }) => (
-    <View>
-      <TouchableOpacity
-        onPress={onPress}
-        disabled={!onPress}
-        className={`flex-row items-center px-5 py-4 gap-4 ${
-          onPress ? "active:bg-accent/50" : ""
-        }`}
-      >
-        <View
-          className={`w-9 h-9 rounded-full items-center justify-center ${
-            isDestructive
-              ? "bg-destructive/15"
-              : isDark
-              ? "bg-primary/20"
-              : "bg-primary/10"
-          }`}
-        >
-          <Ionicons
-            name={icon}
-            size={20}
-            color={isDestructive ? "#ef4444" : isDark ? "#60a5fa" : "#2563eb"}
-          />
-        </View>
-        <View className="flex-1">
-          <Text
-            className={`text-base font-semibold ${
-              isDestructive ? "text-destructive" : "text-foreground"
-            }`}
-          >
-            {label}
-          </Text>
-        </View>
-        {value && (
-          <Text className="text-muted-foreground text-sm mr-3 font-medium">
-            {value}
-          </Text>
-        )}
-        {rightElement}
-        {showChevron && !rightElement && (
-          <Ionicons
-            name="chevron-forward"
-            size={18}
-            color={isDark ? "#9ca3af" : "#6b7280"}
-          />
-        )}
-      </TouchableOpacity>
-      {!isLast && <View className="mx-5 h-[0.5px] bg-border" />}
-    </View>
-  );
 
   return (
     <Container>
