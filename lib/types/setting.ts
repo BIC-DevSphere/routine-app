@@ -1,7 +1,8 @@
-import Ionicons from "@expo/vector-icons/Ionicons";
+import type { ComponentProps } from "react";
+import type Ionicons from "@expo/vector-icons/Ionicons";
 
 export interface SettingItemProps {
-  icon: keyof typeof Ionicons.glyphMap;
+  icon: ComponentProps<typeof Ionicons>["name"];
   label: string;
   value?: string;
   onPress?: () => void;

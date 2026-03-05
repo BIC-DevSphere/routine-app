@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { useColorScheme } from "@/lib/use-color-scheme";
 import type { SettingItemProps } from "@/lib/types/setting";
-
 
 export function SettingItem({
   icon,
@@ -12,8 +12,11 @@ export function SettingItem({
   isDestructive = false,
   rightElement,
   isLast = false,
-  isDark = false,
+  isDark,
 }: SettingItemProps) {
+  const { isDarkColorScheme } = useColorScheme();
+  const effectiveDark = isDark ?? isDarkColorScheme;
+
   return (
     <View>
       <TouchableOpacity
@@ -27,15 +30,17 @@ export function SettingItem({
           className={`w-9 h-9 rounded-full items-center justify-center ${
             isDestructive
               ? "bg-destructive/15"
-              : isDark
-              ? "bg-primary/20"
-              : "bg-primary/10"
+              : effectiveDark
+                ? "bg-primary/20"
+                : "bg-primary/10"
           }`}
         >
           <Ionicons
             name={icon}
             size={20}
-            color={isDestructive ? "#ef4444" : isDark ? "#60a5fa" : "#2563eb"}
+            color={
+              isDestructive ? "#ef4444" : effectiveDark ? "#60a5fa" : "#2563eb"
+            }
           />
         </View>
         <View className="flex-1">
@@ -57,7 +62,7 @@ export function SettingItem({
           <Ionicons
             name="chevron-forward"
             size={18}
-            color={isDark ? "#9ca3af" : "#6b7280"}
+            color={effectiveDark ? "#9ca3af" : "#6b7280"}
           />
         )}
       </TouchableOpacity>

@@ -21,7 +21,8 @@ export default function Home() {
 
   const { data: routineData, isLoading, error, refetch } = useRoutine();
 
-  const weekDates = useMemo(() => getWeekDates(), []);
+  const todayString = new Date().toDateString();
+  const weekDates = useMemo(() => getWeekDates(), [todayString]);
   const todayRoutine = routineData?.week[activeDayIndex];
 
   const onRefresh = async () => {
