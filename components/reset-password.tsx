@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
-import { View, TextInput, Text, TouchableOpacity } from "react-native";
+import { View, TextInput, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { authClient } from "@/lib/auth-client";
 import { useColorScheme } from "@/lib/use-color-scheme";
 import ToastManager, { Toast } from 'toastify-react-native';
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useLocalSearchParams, router } from 'expo-router';
+import { getNeoStyles, NEO_COLORS } from "@/lib/neo-styles";
 
 export default function ResetPassword() {
     const [password, setPassword] = useState("");
@@ -14,8 +15,11 @@ export default function ResetPassword() {
     const [loading, setLoading] = useState<boolean>(false);
     const { isDarkColorScheme } = useColorScheme();
     const params = useLocalSearchParams();
+    const neo = getNeoStyles(isDarkColorScheme);
+    const colors = isDarkColorScheme ? NEO_COLORS.dark : NEO_COLORS.light;
 
-    const placeholderColor = isDarkColorScheme ? "#9CA3AF" : "#6B7280";
+    const placeholderColor = isDarkColorScheme ? "#A3A3A3" : "#737373";
+    const iconColor = isDarkColorScheme ? "#A3A3A3" : "#737373";
 
     const token = typeof params.token === 'string' ? params.token : '';
 
@@ -89,87 +93,168 @@ export default function ResetPassword() {
     };
 
     if (!token) {
-        return null; 
+        return null;
     }
 
     return (
-        <View className="flex-1 justify-center items-center px-4">
-            <Text className="font-bold font-serif text-5xl text-foreground mb-8">Reset Password</Text>
-            <View className="w-full max-w-96 rounded-xl">
-                <View className="items-center shadow-sm shadow-current rounded-xl px-6 py-10 bg-background">
-                    <View className="w-full gap-6 max-w-80 px-5 py-6">
-                        <Text className="text-center text-muted-foreground mb-4">
-                            Enter your new password below
-                        </Text>
+        <View
+          style={[styles.screen, { backgroundColor: colors.bg }]}
+        >
+            <Text className="font-bold text-foreground" style={styles.title}>
+              Reset Password
+            </Text>
 
-                        <View className="input-row">
-                            <Ionicons name="lock-closed-outline" size={20} color={placeholderColor} />
-                            <TextInput
-                                placeholder="New Password"
-                                value={password}
-                                onChangeText={setPassword}
-                                className="input-text"
-                                placeholderTextColor={placeholderColor}
-                                secureTextEntry={!showPassword}
-                                autoCapitalize="none"
-                            />
-                            <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-                                <Ionicons
-                                    name={showPassword ? "eye" : "eye-off"}
-                                    size={20}
-                                    color={placeholderColor}
-                                />
-                            </TouchableOpacity>
-                        </View>
+            <View style={[styles.card, neo.raised, { backgroundColor: colors.bg }]}>
+                <Text className="text-center text-muted-foreground text-sm">
+                    Enter your new password below
+                </Text>
 
-                        <View className="input-row">
-                            <Ionicons name="lock-closed-outline" size={20} color={placeholderColor} />
-                            <TextInput
-                                placeholder="Confirm New Password"
-                                value={confirmPassword}
-                                onChangeText={setConfirmPassword}
-                                className="input-text"
-                                placeholderTextColor={placeholderColor}
-                                secureTextEntry={!showConfirmPassword}
-                                autoCapitalize="none"
-                            />
-                            <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
-                                <Ionicons
-                                    name={showConfirmPassword ? "eye" : "eye-off"}
-                                    size={20}
-                                    color={placeholderColor}
-                                />
-                            </TouchableOpacity>
-                        </View>
-
-                        <View className="gap-2 mb-4">
-                            <Text className="text-xs text-muted-foreground">Password requirements:</Text>
-                            <Text className="text-xs text-muted-foreground">• At least 8 characters long</Text>
-                            <Text className="text-xs text-muted-foreground">• One uppercase letter</Text>
-                            <Text className="text-xs text-muted-foreground">• One lowercase letter</Text>
-                            <Text className="text-xs text-muted-foreground">• One number</Text>
-                        </View>
-
-                        <TouchableOpacity
-                            className="bg-primary text-center rounded-xl p-3"
-                            onPress={handleResetPassword}
-                            disabled={loading}
-                        >
-                            <Text className="text-primary-foreground text-center font-bold">
-                                {loading ? "Resetting Password..." : "Reset Password"}
-                            </Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity
-                            className="bg-muted/50 border border-muted rounded-xl p-3 mt-2"
-                            onPress={handleBackToSignIn}
-                        >
-                            <Text className="text-muted-foreground text-center font-medium">Back to Sign In</Text>
-                        </TouchableOpacity>
-                    </View>
+                {/* New Password */}
+                <View style={[styles.inputRow, neo.inset]}>
+                    <Ionicons name="lock-closed-outline" size={20} color={iconColor} />
+                    <TextInput
+                        placeholder="New Password"
+                        value={password}
+                        onChangeText={setPassword}
+                        className="flex-1 text-foreground"
+                        style={styles.textInput}
+                        placeholderTextColor={placeholderColor}
+                        secureTextEntry={!showPassword}
+                        autoCapitalize="none"
+                    />
+                    <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+                        <Ionicons
+                            name={showPassword ? "eye" : "eye-off"}
+                            size={20}
+                            color={iconColor}
+                        />
+                    </TouchableOpacity>
                 </View>
+
+                {/* Confirm Password */}
+                <View style={[styles.inputRow, neo.inset]}>
+                    <Ionicons name="lock-closed-outline" size={20} color={iconColor} />
+                    <TextInput
+                        placeholder="Confirm New Password"
+                        value={confirmPassword}
+                        onChangeText={setConfirmPassword}
+                        className="flex-1 text-foreground"
+                        style={styles.textInput}
+                        placeholderTextColor={placeholderColor}
+                        secureTextEntry={!showConfirmPassword}
+                        autoCapitalize="none"
+                    />
+                    <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
+                        <Ionicons
+                            name={showConfirmPassword ? "eye" : "eye-off"}
+                            size={20}
+                            color={iconColor}
+                        />
+                    </TouchableOpacity>
+                </View>
+
+                {/* Requirements */}
+                <View style={styles.requirements}>
+                    <Text className="text-xs text-muted-foreground font-semibold uppercase tracking-widest">
+                      Requirements:
+                    </Text>
+                    {["At least 8 characters", "One uppercase letter", "One lowercase letter", "One number"].map((r) => (
+                      <View key={r} style={styles.reqRow}>
+                        <View style={styles.reqDot} />
+                        <Text className="text-xs text-muted-foreground">{r}</Text>
+                      </View>
+                    ))}
+                </View>
+
+                {/* Reset Button */}
+                <TouchableOpacity
+                    style={[styles.primaryBtn, neo.primaryRaised]}
+                    onPress={handleResetPassword}
+                    disabled={loading}
+                    activeOpacity={0.82}
+                >
+                    <Text style={styles.primaryBtnText}>
+                        {loading ? "Resetting..." : "Reset Password"}
+                    </Text>
+                </TouchableOpacity>
+
+                {/* Back */}
+                <TouchableOpacity
+                    style={[styles.backBtn, neo.raisedSm, { backgroundColor: colors.bg }]}
+                    onPress={handleBackToSignIn}
+                    activeOpacity={0.85}
+                >
+                    <Text className="text-center text-foreground font-semibold">
+                      Back to Sign In
+                    </Text>
+                </TouchableOpacity>
             </View>
             <ToastManager />
         </View>
     );
 }
+
+const styles = StyleSheet.create({
+    screen: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        paddingHorizontal: 24,
+        gap: 28,
+    },
+    title: {
+        fontSize: 36,
+        lineHeight: 42,
+    },
+    card: {
+        width: "100%",
+        maxWidth: 420,
+        borderRadius: 22,
+        padding: 24,
+        gap: 16,
+    },
+    inputRow: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 10,
+        borderRadius: 14,
+        paddingHorizontal: 16,
+        paddingVertical: 14,
+    },
+    textInput: {
+        flex: 1,
+    },
+    requirements: {
+        gap: 6,
+        padding: 12,
+        borderRadius: 10,
+        backgroundColor: "rgba(128,128,128,0.07)",
+    },
+    reqRow: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 8,
+    },
+    reqDot: {
+        width: 5,
+        height: 5,
+        borderRadius: 3,
+        backgroundColor: "#DB1628",
+        opacity: 0.7,
+    },
+    primaryBtn: {
+        borderRadius: 14,
+        paddingVertical: 14,
+        alignItems: "center",
+    },
+    primaryBtnText: {
+        color: "#FFFFFF",
+        fontWeight: "700",
+        fontSize: 16,
+    },
+    backBtn: {
+        borderRadius: 14,
+        paddingVertical: 14,
+        alignItems: "center",
+    },
+});

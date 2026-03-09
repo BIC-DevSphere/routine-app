@@ -11,18 +11,24 @@ export default function TabLayout() {
 			screenOptions={{
 				headerShown: false,
 				tabBarActiveTintColor: isDarkColorScheme
-					? "hsl(217.2 91.2% 59.8%)"
-					: "hsl(221.2 83.2% 53.3%)",
+					? "hsl(353, 81%, 55%)"
+					: "hsl(353, 81%, 47%)",
 				tabBarInactiveTintColor: isDarkColorScheme
-					? "hsl(215 20.2% 65.1%)"
-					: "hsl(215.4 16.3% 46.9%)",
+					? "#A3A3A3"
+					: "#737373",
 				tabBarStyle: {
 					backgroundColor: isDarkColorScheme
-						? "hsl(222.2 84% 4.9%)"
-						: "hsl(0 0% 100%)",
+						? "#0A0A0A"
+						: "#FFFFFF",
 					borderTopColor: isDarkColorScheme
-						? "hsl(217.2 32.6% 17.5%)"
-						: "hsl(214.3 31.8% 91.4%)",
+						? "#262626"
+						: "#E5E5E5",
+					paddingBottom: 6,
+					height: 58,
+				},
+				tabBarLabelStyle: {
+					fontSize: 11,
+					fontWeight: "600",
 				},
 			}}
 		>
@@ -30,15 +36,17 @@ export default function TabLayout() {
 				name="home"
 				options={{
 					title: "Home",
-					tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
+					tabBarIcon: ({ color, focused }) => (
+						<TabBarIcon name="home" color={color} focused={focused} />
+					),
 				}}
 			/>
 			<Tabs.Screen
 				name="setting"
 				options={{
 					title: "Settings",
-					tabBarIcon: ({ color }) => (
-						<TabBarIcon name="compass" color={color} />
+					tabBarIcon: ({ color, focused }) => (
+						<TabBarIcon name="cog" color={color} focused={focused} />
 					),
 				}}
 			/>
@@ -46,8 +54,8 @@ export default function TabLayout() {
 				name="support"
 				options={{
 					title: "Support",
-					tabBarIcon: ({ color }) => (
-						<TabBarIcon name="question-circle" color={color} />
+					tabBarIcon: ({ color, focused }) => (
+						<TabBarIcon name="life-ring" color={color} focused={focused} />
 					),
 				}}
 			/>

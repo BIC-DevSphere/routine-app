@@ -1,45 +1,92 @@
-import { TouchableOpacity, Text, View } from "react-native";
+import { TouchableOpacity, Text, View, StyleSheet } from "react-native";
 import { useColorScheme } from "@/lib/use-color-scheme";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { getNeoStyles, NEO_COLORS } from "@/lib/neo-styles";
 
 export function ThemeToggle() {
   const { toggleColorScheme, colorScheme } = useColorScheme();
-
   const isDark = colorScheme === "dark";
+  const neo = getNeoStyles(isDark);
+  const colors = isDark ? NEO_COLORS.dark : NEO_COLORS.light;
 
   return (
     <TouchableOpacity
       onPress={toggleColorScheme}
-      className="mb-4 p-4 rounded-lg border border-primary/20 bg-primary/5"
+      activeOpacity={0.85}
+      style={[styles.card, neo.raised, { backgroundColor: colors.bg }]}
     >
-      <View className="flex-row items-center justify-between">
-        <View className="flex-1">
-          <Text className="text-lg font-semibold text-foreground mb-1">
-            Theme
-          </Text>
-          <Text className="text-base text-muted-foreground">
+      <View style={styles.row}>
+        <View
+          style={[
+            styles.iconWrap,
+            { backgroundColor: isDark ? "rgba(251,191,36,0.15)" : "rgba(245,158,11,0.12)" },
+          ]}
+        >
+          <Ionicons
+            name={isDark ? "moon" : "sunny"}
+            size={20}
+            color={isDark ? "#fbbf24" : "#f59e0b"}
+          />
+        </View>
+        <View style={styles.textWrap}>
+          <Text className="text-base font-bold text-foreground">Theme</Text>
+          <Text className="text-sm text-muted-foreground">
             {isDark ? "Dark mode" : "Light mode"}
           </Text>
         </View>
-        <View className="flex-row items-center">
-          <Ionicons
-            name={isDark ? "moon" : "sunny"}
-            size={24}
-            color={isDark ? "#fbbf24" : "#f59e0b"}
-          />
+        {/* Toggle pill */}
+        <View
+          style={[
+            styles.pill,
+            { backgroundColor: isDark ? colors.primaryColor : colors.shadowDark },
+            neo.inset,
+          ]}
+        >
           <View
-            className={`ml-3 w-12 h-6 rounded-full p-1 ${
-              isDark ? "bg-primary" : "bg-gray-300"
-            }`}
-          >
-            <View
-              className={`w-4 h-4 rounded-full bg-white ${
-                isDark ? "ml-6" : "ml-0"
-              }`}
-            />
-          </View>
+            style={[
+              styles.thumb,
+              { transform: [{ translateX: isDark ? 20 : 0 }] },
+            ]}
+          />
         </View>
       </View>
     </TouchableOpacity>
   );
 }
+
+const styles = StyleSheet.create({
+  card: {
+    marginBottom: 4,
+    padding: 16,
+    borderRadius: 18,
+  },
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
+  iconWrap: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  textWrap: {
+    flex: 1,
+    gap: 2,
+  },
+  pill: {
+    width: 48,
+    height: 26,
+    borderRadius: 13,
+    padding: 3,
+    justifyContent: "center",
+  },
+  thumb: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: "#FFFFFF",
+  },
+});

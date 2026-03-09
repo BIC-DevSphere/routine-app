@@ -1,34 +1,47 @@
 import { Container } from "@/components/container";
+import Animated from "react-native-reanimated";
 import {
   ScrollView,
   Text,
   View,
-  TouchableOpacity,
   Switch,
   Alert,
+  StyleSheet,
 } from "react-native";
 import { authClient } from "@/lib/auth-client";
 import { useColorScheme } from "@/lib/use-color-scheme";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useProfile } from "@/lib/api/profile";
 import { useRouter } from "expo-router";
+import { getNeoStyles, NEO_COLORS } from "@/lib/neo-styles";
+import { useFocusFade } from "@/lib/animations";
+import { SettingItem } from "@/components/setting-item";
 
 export default function Setting() {
   const router = useRouter();
   const { data: profile } = useProfile();
   const { data: session } = authClient.useSession();
   const { colorScheme, toggleColorScheme } = useColorScheme();
+  const isDark = colorScheme === "dark";
+  const neo = getNeoStyles(isDark);
+  const colors = isDark ? NEO_COLORS.dark : NEO_COLORS.light;
 
   const displayName = profile?.name || session?.user?.name || "User";
   const displayEmail = profile?.email || session?.user?.email;
-  const isDark = colorScheme === "dark";
+  const iconMuted = isDark ? "#A3A3A3" : "#737373";
+  const iconAccent = isDark ? "#f87171" : "#dc2626";
+
+  const dividerColor = isDark ? colors.shadowLight : colors.shadowDark;
+
+  const titleAnim      = useFocusFade(0,    -12);
+  const profileAnim    = useFocusFade(80,    20);
+  const appearanceAnim = useFocusFade(160,   20);
+  const supportAnim    = useFocusFade(230,   20);
+  const accountAnim    = useFocusFade(300,   20);
 
   const handleLogout = async () => {
     Alert.alert("Logout", "Are you sure you want to logout?", [
-      {
-        text: "Cancel",
-        style: "cancel",
-      },
+      { text: "Cancel", style: "cancel" },
       {
         text: "Logout",
         style: "destructive",
@@ -39,201 +52,227 @@ export default function Setting() {
     ]);
   };
 
-  const SettingItem = ({
-    icon,
-    label,
-    value,
-    onPress,
-    showChevron = true,
-    isDestructive = false,
-    rightElement,
-    isLast = false,
-  }: {
-    icon: keyof typeof Ionicons.glyphMap;
-    label: string;
-    value?: string;
-    onPress?: () => void;
-    showChevron?: boolean;
-    isDestructive?: boolean;
-    rightElement?: React.ReactNode;
-    isLast?: boolean;
-  }) => (
-    <View>
-      <TouchableOpacity
-        onPress={onPress}
-        disabled={!onPress}
-        className={`flex-row items-center px-5 py-4 gap-4 ${
-          onPress ? "active:bg-accent/50" : ""
-        }`}
-      >
-        <View
-          className={`w-9 h-9 rounded-full items-center justify-center ${
-            isDestructive
-              ? "bg-destructive/15"
-              : isDark
-              ? "bg-primary/20"
-              : "bg-primary/10"
-          }`}
-        >
-          <Ionicons
-            name={icon}
-            size={20}
-            color={isDestructive ? "#ef4444" : isDark ? "#60a5fa" : "#2563eb"}
-          />
-        </View>
-        <View className="flex-1">
-          <Text
-            className={`text-base font-semibold ${
-              isDestructive ? "text-destructive" : "text-foreground"
-            }`}
-          >
-            {label}
-          </Text>
-        </View>
-        {value && (
-          <Text className="text-muted-foreground text-sm mr-3 font-medium">
-            {value}
-          </Text>
-        )}
-        {rightElement}
-        {showChevron && !rightElement && (
-          <Ionicons
-            name="chevron-forward"
-            size={18}
-            color={isDark ? "#9ca3af" : "#6b7280"}
-          />
-        )}
-      </TouchableOpacity>
-      {!isLast && <View className="mx-5 h-[0.5px] bg-border" />}
-    </View>
-  );
-
   return (
     <Container>
-      <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
-        <View className="p-4 gap-10">
-          <Text className="text-3xl font-bold text-foreground">Settings</Text>
+      <ScrollView style={styles.scroll} showsVerticalScrollIndicator={false}>
+        <View style={styles.page}>
+          <Animated.View style={titleAnim}>
+          <Text className="text-foreground font-bold" style={styles.pageTitle}>
+            Settings
+          </Text>
+          </Animated.View>
 
-          {/* Profile Section */}
-          <View className="gap-4">
-            <Text className="settings-title">Profile</Text>
-            <View className="rounded-3xl p-6 gap-6 border border-border bg-secondary/50">
-              {/* Header with avatar and edit button */}
-              <View className="flex-row items-center">
-                <View
-                  className={`w-18 h-18 px-2 rounded-full items-center justify-center mr-4 ${
-                    isDark ? "bg-primary/25" : "bg-primary/15"
-                  }`}
-                >
-                  <Text className="text-2xl font-bold text-primary">
+          <Animated.View style={[styles.section, profileAnim]}>
+            <Text className="settings-title" style={styles.sectionTitle}>
+              Profile
+            </Text>
+            <View style={[styles.groupCard, neo.raised, { backgroundColor: colors.bg }]}>
+              <View style={styles.profileHeader}>
+                <View style={styles.avatar}>
+                  <Text style={styles.avatarText}>
                     {displayName[0]?.toUpperCase() || "U"}
                   </Text>
                 </View>
-                <View className="flex-1 gap-1">
+                <View style={styles.profileInfo}>
                   <Text className="text-xl font-bold text-foreground">
                     {displayName}
                   </Text>
-                  <Text className="text-muted-foreground text-sm font-medium">
+                  <Text className="text-muted-foreground text-sm">
                     {displayEmail}
                   </Text>
                 </View>
               </View>
 
-              {/* Divider */}
-              <View className="h-[1px] bg-border" />
+              <View style={[styles.divider, { backgroundColor: dividerColor, opacity: 0.2 }]} />
 
-              {/* Student Information */}
-              <View className="gap-6">
-                <View className="flex-row justify-between items-center">
-                  <Text className="text-muted-foreground font-semibold">
-                    Student ID
-                  </Text>
-                  <Text className="text-foreground font-bold text-base">
-                    2023CS001
-                  </Text>
+              <View style={styles.infoRows}>
+                <View style={styles.infoRow}>
+                  <Text className="text-muted-foreground font-semibold">Student ID</Text>
+                  <Text className="text-foreground font-bold">2023CS001</Text>
                 </View>
-                <View className="h-[0.5px] bg-border" />
-                <View className="flex-row justify-between items-center">
-                  <Text className="text-muted-foreground font-semibold">
-                    Group
-                  </Text>
-                  <Text className="text-foreground font-bold text-base">
-                    L5CG1
-                  </Text>
+                <View style={[styles.divider, { backgroundColor: dividerColor, opacity: 0.2 }]} />
+                <View style={styles.infoRow}>
+                  <Text className="text-muted-foreground font-semibold">Group</Text>
+                  <Text className="text-foreground font-bold">L5CG1</Text>
                 </View>
               </View>
             </View>
-          </View>
+          </Animated.View>
 
-          {/* Preferences */}
-          <View className="gap-4">
-            <Text className="settings-title">Appearance</Text>
-            <View className="rounded-3xl overflow-hidden border border-border bg-secondary/50">
+          <Animated.View style={[styles.section, appearanceAnim]}>
+            <Text className="settings-title" style={styles.sectionTitle}>
+              Appearance
+            </Text>
+            <View style={[styles.groupCard, neo.raised, { backgroundColor: colors.bg }]}>
               <SettingItem
                 icon="moon"
                 label="Dark Mode"
                 showChevron={false}
-                isLast={true}
+                isLast
+                isDark={isDark}
+                iconAccent={iconAccent}
+                iconMuted={iconMuted}
+                dividerColor={dividerColor}
                 rightElement={
                   <Switch
                     value={isDark}
                     onValueChange={toggleColorScheme}
                     trackColor={{
-                      false: isDark ? "#374151" : "#d1d5db",
-                      true: isDark ? "#2563eb" : "#3b82f6",
+                      false: isDark ? "#404040" : "#D4D4D4",
+                      true: colors.primaryColor,
                     }}
-                    thumbColor={isDark ? "#ffffff" : "#ffffff"}
-                    ios_backgroundColor={isDark ? "#374151" : "#d1d5db"}
+                    thumbColor="#ffffff"
+                    ios_backgroundColor={isDark ? "#404040" : "#D4D4D4"}
                   />
                 }
               />
             </View>
-          </View>
+          </Animated.View>
 
-          {/* Support */}
-          <View className="gap-4">
-            <Text className="settings-title">Support</Text>
-            <View className="rounded-3xl overflow-hidden border border-border bg-secondary/50">
+          <Animated.View style={[styles.section, supportAnim]}>
+            <Text className="settings-title" style={styles.sectionTitle}>
+              Support
+            </Text>
+            <View style={[styles.groupCard, neo.raised, { backgroundColor: colors.bg }]}>
               <SettingItem
                 icon="help-buoy"
                 label="Get Help"
                 onPress={() => router.push("/(tabs)/support")}
+                isDark={isDark}
+                iconAccent={iconAccent}
+                iconMuted={iconMuted}
+                dividerColor={dividerColor}
               />
               <SettingItem
                 icon="document-text"
                 label="Terms of Service"
                 onPress={() => {}}
+                isDark={isDark}
+                iconAccent={iconAccent}
+                iconMuted={iconMuted}
+                dividerColor={dividerColor}
               />
               <SettingItem
                 icon="shield-checkmark"
                 label="Privacy Policy"
                 onPress={() => {}}
-                isLast={true}
+                isLast
+                isDark={isDark}
+                iconAccent={iconAccent}
+                iconMuted={iconMuted}
+                dividerColor={dividerColor}
               />
             </View>
-          </View>
+          </Animated.View>
 
-          {/* Account */}
-          <View className="gap-4">
-            <Text className="settings-title">Account</Text>
-            <View className="rounded-3xl overflow-hidden border border-border bg-secondary/50">
+          <Animated.View style={[styles.section, accountAnim]}>
+            <Text className="settings-title" style={styles.sectionTitle}>
+              Account
+            </Text>
+            <View style={[styles.groupCard, neo.destructiveRaised]}>
               <SettingItem
                 icon="log-out"
                 label="Log Out"
                 isDestructive
                 showChevron={false}
                 onPress={handleLogout}
-                isLast={true}
+                isLast
+                isDark={isDark}
+                iconAccent={iconAccent}
+                iconMuted={iconMuted}
+                dividerColor={dividerColor}
               />
             </View>
-          </View>
+          </Animated.View>
 
-          <View className="items-center">
-            <Text className="text-muted-foreground text-xs">Version 1.0.0</Text>
-          </View>
+          <Text className="text-muted-foreground text-xs text-center">
+            Version 1.0.0
+          </Text>
         </View>
-
       </ScrollView>
     </Container>
   );
 }
+
+const styles = StyleSheet.create({
+  scroll: {
+    flex: 1,
+  },
+  page: {
+    padding: 16,
+    gap: 20,
+    paddingBottom: 40,
+  },
+  pageTitle: {
+    fontSize: 30,
+    lineHeight: 36,
+  },
+  section: {
+    gap: 10,
+  },
+  sectionTitle: {
+    marginLeft: 4,
+  },
+  groupCard: {
+    borderRadius: 20,
+    overflow: "hidden",
+    paddingVertical: 4,
+  },
+  settingRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    gap: 14,
+  },
+  settingIcon: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  settingContent: {
+    flex: 1,
+  },
+  divider: {
+    height: 1,
+    marginHorizontal: 16,
+  },
+  profileHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 12,
+    gap: 14,
+  },
+  avatar: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    backgroundColor: "rgba(219,22,40,0.12)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  avatarText: {
+    fontSize: 22,
+    fontWeight: "700",
+    color: "#DB1628",
+  },
+  profileInfo: {
+    flex: 1,
+    gap: 3,
+  },
+  infoRows: {
+    paddingHorizontal: 16,
+    paddingBottom: 16,
+    paddingTop: 12,
+    gap: 12,
+  },
+  infoRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+});

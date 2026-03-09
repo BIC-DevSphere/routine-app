@@ -6,11 +6,14 @@ import {
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
+  StyleSheet,
 } from "react-native";
 import { updateProfile, useProfile } from "@/lib/api/profile";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { ProfileEditModalProps } from "@/lib/types/profile";
 import { useQueryClient } from "@tanstack/react-query";
+import { useColorScheme } from "@/lib/use-color-scheme";
+import { getNeoStyles, NEO_COLORS } from "@/lib/neo-styles";
 
 export function ProfileEditModal({
   visible,
@@ -21,6 +24,9 @@ export function ProfileEditModal({
   const [name, setName] = useState(profile?.name || "");
   const [isLoading, setIsLoading] = useState(false);
   const queryClient = useQueryClient();
+  const { isDarkColorScheme } = useColorScheme();
+  const neo = getNeoStyles(isDarkColorScheme);
+  const colors = isDarkColorScheme ? NEO_COLORS.dark : NEO_COLORS.light;
 
   useEffect(() => {
     if (visible && profile?.name) {
@@ -34,8 +40,8 @@ export function ProfileEditModal({
     setIsLoading(true);
     try {
       const data = await updateProfile({ name: name.trim() });
-      queryClient.invalidateQueries({ queryKey: ["profile", profile?.id] })
-      onProfileUpdated(data.name)
+      queryClient.invalidateQueries({ queryKey: ["profile", profile?.id] });
+      onProfileUpdated(data.name);
       onClose();
     } catch (error) {
       console.error("Failed to update profile:", error);
@@ -56,50 +62,73 @@ export function ProfileEditModal({
       animationType="slide"
       onRequestClose={handleClose}
     >
-      <View className="flex-1 justify-end bg-black/50">
-        <View className="bg-background rounded-t-3xl p-6 border-x border-t border-border">
-          <View className="flex-row items-center justify-between mb-6">
-            <Text className="text-xl font-bold text-foreground">
-              Edit Profile
-            </Text>
-            <TouchableOpacity onPress={handleClose}>
-              <Ionicons name="close" size={24} color="#666" />
+      <View style={styles.overlay}>
+        <View
+          style={[
+            styles.sheet,
+            neo.raised,
+            { backgroundColor: colors.bg },
+          ]}
+        >
+          {/* Handle bar */}
+          <View style={styles.handle} />
+
+          <View style={styles.header}>
+            <Text className="text-xl font-bold text-foreground">Edit Profile</Text>
+            <TouchableOpacity onPress={handleClose} style={styles.closeBtn}>
+              <Ionicons
+                name="close"
+                size={20}
+                color={isDarkColorScheme ? "#A3A3A3" : "#737373"}
+              />
             </TouchableOpacity>
           </View>
 
-          <View className="mb-6">
-            <Text className="text-base font-medium text-foreground mb-2">
+          <View style={styles.field}>
+            <Text className="text-sm font-semibold text-foreground" style={styles.fieldLabel}>
               Name
             </Text>
-            <TextInput
-              value={name}
-              onChangeText={setName}
-              placeholder="Enter your name"
-              className="border border-primary/20 rounded-lg p-3 text-base text-foreground bg-background"
-              placeholderTextColor="#999"
-            />
+            <View style={[styles.inputRow, neo.inset]}>
+              <Ionicons
+                name="person-outline"
+                size={18}
+                color={isDarkColorScheme ? "#A3A3A3" : "#737373"}
+              />
+              <TextInput
+                value={name}
+                onChangeText={setName}
+                placeholder="Enter your name"
+                className="flex-1 text-foreground"
+                style={styles.textInput}
+                placeholderTextColor={isDarkColorScheme ? "#A3A3A3" : "#737373"}
+              />
+            </View>
           </View>
 
-          <View className="flex-row gap-3">
+          <View style={styles.actions}>
             <TouchableOpacity
               onPress={handleClose}
-              className="flex-1 p-3 rounded-lg bg-[#ef4444]"
+              style={[styles.cancelBtn, neo.raisedSm]}
+              activeOpacity={0.85}
             >
-              <Text className="text-center text-base font-medium text-primary-foreground">
+              <Text className="text-center text-base font-semibold text-foreground">
                 Cancel
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={handleSave}
               disabled={isLoading || !name.trim()}
-              className="flex-1 p-3 rounded-lg bg-primary disabled:opacity-50"
+              activeOpacity={0.82}
+              style={[
+                styles.saveBtn,
+                neo.primaryRaised,
+                (isLoading || !name.trim()) && styles.disabled,
+              ]}
             >
               {isLoading ? (
                 <ActivityIndicator size="small" color="#fff" />
               ) : (
-                <Text className="text-center text-base font-medium text-primary-foreground">
-                  Save
-                </Text>
+                <Text style={styles.saveBtnText}>Save</Text>
               )}
             </TouchableOpacity>
           </View>
@@ -108,3 +137,83 @@ export function ProfileEditModal({
     </Modal>
   );
 }
+
+const styles = StyleSheet.create({
+  overlay: {
+    flex: 1,
+    justifyContent: "flex-end",
+    backgroundColor: "rgba(0,0,0,0.55)",
+  },
+  sheet: {
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
+    padding: 24,
+    paddingBottom: 36,
+    gap: 20,
+  },
+  handle: {
+    width: 40,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: "rgba(128,128,128,0.3)",
+    alignSelf: "center",
+    marginBottom: 4,
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  closeBtn: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: "rgba(128,128,128,0.12)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  field: {
+    gap: 8,
+  },
+  fieldLabel: {
+    marginLeft: 4,
+  },
+  inputRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    borderRadius: 14,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+  },
+  textInput: {
+    flex: 1,
+  },
+  actions: {
+    flexDirection: "row",
+    gap: 12,
+    marginTop: 4,
+  },
+  cancelBtn: {
+    flex: 1,
+    padding: 14,
+    borderRadius: 14,
+    alignItems: "center",
+  },
+  saveBtn: {
+    flex: 1,
+    padding: 14,
+    borderRadius: 14,
+    alignItems: "center",
+  },
+  saveBtnText: {
+    color: "#FFFFFF",
+    fontWeight: "700",
+    fontSize: 15,
+  },
+  disabled: {
+    opacity: 0.5,
+  },
+});

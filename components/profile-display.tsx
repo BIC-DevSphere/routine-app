@@ -1,31 +1,89 @@
-import { TouchableOpacity, Text, View } from "react-native";
+import Animated from "react-native-reanimated";
+import { TouchableOpacity, Text, View, StyleSheet } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import {ProfileDisplayProps} from "@/lib/types/profile"
+import { ProfileDisplayProps } from "@/lib/types/profile";
 import { useProfile } from "@/lib/api/profile";
+import { useColorScheme } from "@/lib/use-color-scheme";
+import { getNeoStyles, NEO_COLORS } from "@/lib/neo-styles";
+import { useMountFade, useScalePress } from "@/lib/animations";
 
 export function ProfileDisplay({ onEditPress }: ProfileDisplayProps) {
   const { data: profile } = useProfile();
+  const { isDarkColorScheme } = useColorScheme();
+  const neo = getNeoStyles(isDarkColorScheme);
+  const colors = isDarkColorScheme ? NEO_COLORS.dark : NEO_COLORS.light;
+
+  const mountAnim = useMountFade(0, 16);
+  const { style: pressStyle, onPressIn, onPressOut } = useScalePress(0.97);
 
   if (!profile) {
     return null;
   }
 
   return (
-    <TouchableOpacity
-      onPress={onEditPress}
-      className="mb-4 p-4 rounded-lg border border-primary/20 bg-primary/5"
-    >
-      <View className="flex-row items-center justify-between">
-        <View className="flex-1">
-          <Text className="text-lg font-semibold text-foreground mb-1">
-            {profile.name}
-          </Text>
-          <Text className="text-base text-muted-foreground">
-            {profile.email}
+    <Animated.View style={[mountAnim, pressStyle]}>
+      <TouchableOpacity
+        onPress={onEditPress}
+        onPressIn={onPressIn}
+        onPressOut={onPressOut}
+        activeOpacity={1}
+        style={[styles.card, neo.raised, { backgroundColor: colors.bg }]}
+      >
+      <View style={styles.row}>
+        <View style={styles.avatarWrap}>
+          <Text style={styles.avatarText}>
+            {profile.name?.[0]?.toUpperCase() || "U"}
           </Text>
         </View>
-        <Ionicons name="pencil" size={24} color="#666" />
+        <View style={styles.info}>
+          <Text className="text-base font-bold text-foreground">
+            {profile.name}
+          </Text>
+          <Text className="text-sm text-muted-foreground">{profile.email}</Text>
+        </View>
+        <View style={styles.editBtn}>
+          <Ionicons name="pencil" size={16} color={colors.primaryColor} />
+        </View>
       </View>
-    </TouchableOpacity>
+      </TouchableOpacity>
+    </Animated.View>
   );
 }
+
+const styles = StyleSheet.create({
+  card: {
+    marginBottom: 4,
+    padding: 16,
+    borderRadius: 18,
+  },
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  avatarWrap: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: "rgba(219,22,40,0.12)",
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 12,
+  },
+  avatarText: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#DB1628",
+  },
+  info: {
+    flex: 1,
+    gap: 2,
+  },
+  editBtn: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: "rgba(219,22,40,0.10)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});
