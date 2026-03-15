@@ -80,3 +80,7 @@ export const getNeoStyles = (isDark: boolean) => {
     },
   });
 };
+
+export type NeoStyles = ReturnType<typeof getNeoStyles>;
+
+export type NeoStyleKeys = keyof NeoStyles;

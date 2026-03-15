@@ -2,14 +2,14 @@ import { useEffect } from "react";
 import { TouchableOpacity, Text, StyleSheet } from "react-native";
 import Animated, { useSharedValue, useAnimatedStyle, withSpring } from "react-native-reanimated";
 import { SPRINGS, useScalePress } from "@/lib/animations";
-import type { getNeoStyles } from "@/lib/neo-styles";
+import type { getNeoStyles, NeoStyles } from "@/lib/neo-styles";
 
 interface DayButtonProps {
   day: string;
   date: number;
   isActive: boolean;
   isDark: boolean;
-  neo: ReturnType<typeof getNeoStyles>;
+  neo: NeoStyles;
   onPress: () => void;
 }
 

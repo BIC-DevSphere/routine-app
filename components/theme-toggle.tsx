@@ -38,8 +38,8 @@ export function ThemeToggle() {
         <View
           style={[
             styles.pill,
-            { backgroundColor: isDark ? colors.primaryColor : colors.shadowDark },
             neo.inset,
+            { backgroundColor: isDark ? colors.primaryColor : colors.shadowDark },
           ]}
         >
           <View

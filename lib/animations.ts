@@ -34,7 +34,7 @@ export function useMountFade(delay = 0, fromY = 18) {
       return () => clearTimeout(t);
     }
     run();
-  }, []);
+  }, [delay, fromY]);
 
   return useAnimatedStyle(() => ({
     opacity: opacity.value,
@@ -149,12 +149,15 @@ export function useSlideIn(key: number | string, direction: 1 | -1 = 1, distance
   const translateX = useSharedValue(direction * distance);
   const opacity    = useSharedValue(0);
 
+  // This effect only depends on key, but it also uses direction and distance to set initial values.
+  // If direction/distance change while key stays the same, the animation won't reflect the new inputs.
+  // We include direction and distance in the dependency array. 
   useEffect(() => {
     translateX.value = direction * distance;
     opacity.value    = 0;
     translateX.value = withSpring(0, SPRINGS.gentle);
     opacity.value    = withTiming(1, { duration: 300, easing: Easing.out(Easing.ease) });
-  }, [key]);
+  }, [key, direction, distance]);
 
   return useAnimatedStyle(() => ({
     opacity: opacity.value,
