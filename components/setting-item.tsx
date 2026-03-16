@@ -33,8 +33,8 @@ export function SettingItem({
   const iconBg = isDestructive
     ? "rgba(220,38,38,0.12)"
     : isDark
-    ? "rgba(232,32,58,0.15)"
-    : "rgba(219,22,40,0.09)";
+    ? "hsla(342, 93%, 61%, 0.15)"
+    : "hsla(342, 93%, 61%, 0.09)";
 
   return (
     <View>

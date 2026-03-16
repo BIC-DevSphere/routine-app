@@ -29,7 +29,7 @@ export default function Setting() {
   const displayName = profile?.name || session?.user?.name || "User";
   const displayEmail = profile?.email || session?.user?.email;
   const iconMuted = isDark ? "#A3A3A3" : "#737373";
-  const iconAccent = isDark ? "#f87171" : "#dc2626";
+  const iconAccent = colors.primaryColor;
 
   const dividerColor = isDark ? colors.shadowLight : colors.shadowDark;
 
@@ -251,14 +251,14 @@ const styles = StyleSheet.create({
     width: 52,
     height: 52,
     borderRadius: 26,
-    backgroundColor: "rgba(219,22,40,0.12)",
+    backgroundColor: "hsla(342, 93%, 61%, 0.12)",
     alignItems: "center",
     justifyContent: "center",
   },
   avatarText: {
     fontSize: 22,
     fontWeight: "700",
-    color: "#DB1628",
+    color: "hsl(342, 93%, 61%)",
   },
   profileInfo: {
     flex: 1,

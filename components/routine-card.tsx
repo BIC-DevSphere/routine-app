@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   moduleBadge: {
-    backgroundColor: "rgba(219,22,40,0.12)",
+    backgroundColor: "hsla(342, 93%, 61%, 0.12)",
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 8,
@@ -150,13 +150,13 @@ const styles = StyleSheet.create({
     marginVertical: 4,
   },
   groupBadge: {
-    backgroundColor: "rgba(219,22,40,0.10)",
+    backgroundColor: "hsla(342, 93%, 61%, 0.15)",
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 8,
   },
   groupBadgeText: {
-    color: "#DB1628",
+    color: "hsl(342, 93%, 61%)",
     fontSize: 11,
     fontWeight: "600",
   },

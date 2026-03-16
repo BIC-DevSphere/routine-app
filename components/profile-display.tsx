@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: "rgba(219,22,40,0.12)",
+    backgroundColor: "hsla(342, 93%, 61%, 0.12)",
     alignItems: "center",
     justifyContent: "center",
     marginRight: 12,
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
   avatarText: {
     fontSize: 18,
     fontWeight: "700",
-    color: "#DB1628",
+    color: "hsl(342, 93%, 61%)",
   },
   info: {
     flex: 1,
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     width: 34,
     height: 34,
     borderRadius: 17,
-    backgroundColor: "rgba(219,22,40,0.10)",
+    backgroundColor: "hsla(342, 93%, 61%, 0.1)",
     alignItems: "center",
     justifyContent: "center",
   },

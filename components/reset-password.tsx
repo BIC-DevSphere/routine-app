@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
         width: 5,
         height: 5,
         borderRadius: 3,
-        backgroundColor: "#DB1628",
+        backgroundColor: "hsl(342, 93%, 61%)",
         opacity: 0.7,
     },
     primaryBtn: {

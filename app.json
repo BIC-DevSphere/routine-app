@@ -8,6 +8,7 @@
     "jsEngine" : "hermes",
     "scheme": "routine-app",
     "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.devsphere.routineapp"
@@ -20,6 +21,7 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
+      "edgeToEdgeEnabled": true,
       "package": "com.devsphere.routineapp"
     },
     "web": {

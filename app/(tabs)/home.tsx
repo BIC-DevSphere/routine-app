@@ -217,8 +217,8 @@ const styles = StyleSheet.create({
   errorBox: {
     borderRadius: 14,
     padding: 14,
-    backgroundColor: "rgba(219,22,40,0.08)",
+    backgroundColor: "rgba(220,38,38,0.08)",
     borderWidth: 1,
-    borderColor: "rgba(219,22,40,0.25)",
+    borderColor: "rgba(220,38,38,0.25)",
   },
 });
