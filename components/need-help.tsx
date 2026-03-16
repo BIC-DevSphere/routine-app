@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { View, TextInput, Text, TouchableOpacity, Modal } from "react-native";
+import { View, TextInput, Text, TouchableOpacity, Modal, StyleSheet } from "react-native";
 import { authClient } from "@/lib/auth-client";
 import { useColorScheme } from "@/lib/use-color-scheme";
-import ToastManager, { Toast } from 'toastify-react-native';
+import ToastManager, { Toast } from "toastify-react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { getNeoStyles, NEO_COLORS } from "@/lib/neo-styles";
 
 interface NeedHelpProps {
     visible: boolean;
@@ -15,8 +16,11 @@ export default function NeedHelp({ visible, onClose }: NeedHelpProps) {
     const [loading, setLoading] = useState<boolean>(false);
     const [selectedAction, setSelectedAction] = useState<'forgot' | 'verify' | null>(null);
     const { isDarkColorScheme } = useColorScheme();
+    const neo = getNeoStyles(isDarkColorScheme);
+    const colors = isDarkColorScheme ? NEO_COLORS.dark : NEO_COLORS.light;
 
-    const placeholderColor = isDarkColorScheme ? "#9CA3AF" : "#6B7280";
+    const placeholderColor = isDarkColorScheme ? "#A3A3A3" : "#737373";
+    const iconColor = isDarkColorScheme ? "#A3A3A3" : "#737373";
 
     const handleForgotPassword = async () => {
         if (!email.trim()) {
@@ -91,61 +95,73 @@ export default function NeedHelp({ visible, onClose }: NeedHelpProps) {
             animationType="fade"
             onRequestClose={handleClose}
         >
-            <View className="flex-1 bg-black/50 justify-center items-center px-4">
-                <View className="bg-background rounded-2xl p-6 w-full max-w-sm">
-                    <View className="flex-row justify-between items-center mb-6">
-                        <Text className="text-xl font-bold text-foreground">Need Help?</Text>
-                        <TouchableOpacity onPress={handleClose}>
-                            <Ionicons name="close" size={24} color={placeholderColor} />
+            <View style={styles.overlay}>
+                <View style={[styles.card, neo.raised, { backgroundColor: colors.bg }]}>
+                    <View style={styles.header}>
+                        <Text className="text-lg font-bold text-foreground">Need Help?</Text>
+                        <TouchableOpacity onPress={handleClose} style={styles.closeBtn}>
+                            <Ionicons name="close" size={20} color={iconColor} />
                         </TouchableOpacity>
                     </View>
 
                     {!selectedAction ? (
-                        <View className="gap-4">
-                            <Text className="text-muted-foreground text-center mb-4">
+                        <View style={styles.actionsGroup}>
+                            <Text className="text-muted-foreground text-center text-sm" style={styles.subtitle}>
                                 Choose what you need help with:
                             </Text>
-                            
+
                             <TouchableOpacity
-                                className="bg-primary/10 border border-primary/20 rounded-xl p-4 flex-row items-center"
+                                style={[styles.optionBtn, neo.raisedSm, { backgroundColor: colors.bg }]}
                                 onPress={() => setSelectedAction('forgot')}
+                                activeOpacity={0.85}
                             >
-                                <Ionicons name="key-outline" size={20} color={placeholderColor} />
-                                <Text className="text-foreground font-medium ml-3">Forgot Password</Text>
+                                <View style={styles.optionIcon}>
+                                    <Ionicons name="key-outline" size={18} color={colors.primaryColor} />
+                                </View>
+                                <Text className="text-foreground font-semibold text-sm flex-1">
+                                    Forgot Password
+                                </Text>
+                                <Ionicons name="chevron-forward" size={16} color={iconColor} />
                             </TouchableOpacity>
 
                             <TouchableOpacity
-                                className="bg-primary/10 border border-primary/20 rounded-xl p-4 flex-row items-center"
+                                style={[styles.optionBtn, neo.raisedSm, { backgroundColor: colors.bg }]}
                                 onPress={() => setSelectedAction('verify')}
+                                activeOpacity={0.85}
                             >
-                                <Ionicons name="mail-outline" size={20} color={placeholderColor} />
-                                <Text className="text-foreground font-medium ml-3">Verify Email</Text>
+                                <View style={styles.optionIcon}>
+                                    <Ionicons name="mail-outline" size={18} color={colors.primaryColor} />
+                                </View>
+                                <Text className="text-foreground font-semibold text-sm flex-1">
+                                    Verify Email
+                                </Text>
+                                <Ionicons name="chevron-forward" size={16} color={iconColor} />
                             </TouchableOpacity>
                         </View>
                     ) : (
-                        <View className="gap-4">
+                        <View style={styles.actionsGroup}>
                             <TouchableOpacity
-                                className="flex-row items-center mb-2"
+                                style={styles.backBtn}
                                 onPress={() => setSelectedAction(null)}
                             >
-                                <Ionicons name="arrow-back" size={20} color={placeholderColor} />
-                                <Text className="text-muted-foreground ml-2">Back</Text>
+                                <Ionicons name="arrow-back" size={18} color={iconColor} />
+                                <Text className="text-muted-foreground ml-2 text-sm">Back</Text>
                             </TouchableOpacity>
 
-                            <Text className="text-foreground font-medium mb-4">
-                                {selectedAction === 'forgot' 
-                                    ? 'Reset your password' 
-                                    : 'Resend verification email'
-                                }
+                            <Text className="text-foreground font-semibold text-sm">
+                                {selectedAction === 'forgot'
+                                    ? 'Reset your password'
+                                    : 'Resend verification email'}
                             </Text>
 
-                            <View className="input-row">
-                                <Ionicons name="mail-outline" size={20} color={placeholderColor} />
+                            <View style={[styles.inputRow, neo.inset]}>
+                                <Ionicons name="mail-outline" size={18} color={iconColor} />
                                 <TextInput
                                     placeholder="Enter your email"
                                     value={email}
                                     onChangeText={setEmail}
-                                    className="input-text"
+                                    className="flex-1 text-foreground"
+                                    style={styles.textInput}
                                     placeholderTextColor={placeholderColor}
                                     keyboardType="email-address"
                                     autoCapitalize="none"
@@ -153,17 +169,17 @@ export default function NeedHelp({ visible, onClose }: NeedHelpProps) {
                             </View>
 
                             <TouchableOpacity
-                                className="bg-primary rounded-xl p-3"
+                                style={[styles.submitBtn, neo.primaryRaised]}
                                 onPress={selectedAction === 'forgot' ? handleForgotPassword : handleVerifyEmail}
                                 disabled={loading}
+                                activeOpacity={0.82}
                             >
-                                <Text className="text-primary-foreground text-center font-bold">
-                                    {loading 
-                                        ? "Sending..." 
-                                        : selectedAction === 'forgot' 
-                                        ? "Send Reset Email" 
-                                        : "Send Verification Email"
-                                    }
+                                <Text style={styles.submitText}>
+                                    {loading
+                                        ? "Sending..."
+                                        : selectedAction === 'forgot'
+                                        ? "Send Reset Email"
+                                        : "Send Verification Email"}
                                 </Text>
                             </TouchableOpacity>
                         </View>
@@ -174,3 +190,79 @@ export default function NeedHelp({ visible, onClose }: NeedHelpProps) {
         </Modal>
     );
 }
+
+const styles = StyleSheet.create({
+    overlay: {
+        flex: 1,
+        backgroundColor: "rgba(0,0,0,0.55)",
+        justifyContent: "center",
+        alignItems: "center",
+        paddingHorizontal: 24,
+    },
+    card: {
+        width: "100%",
+        maxWidth: 380,
+        borderRadius: 22,
+        padding: 22,
+        gap: 16,
+    },
+    header: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+    },
+    closeBtn: {
+        width: 32,
+        height: 32,
+        borderRadius: 16,
+        backgroundColor: "rgba(128,128,128,0.12)",
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    actionsGroup: {
+        gap: 12,
+    },
+    subtitle: {
+        marginBottom: 4,
+    },
+    optionBtn: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 12,
+        padding: 14,
+        borderRadius: 14,
+    },
+    optionIcon: {
+        width: 34,
+        height: 34,
+        borderRadius: 17,
+        backgroundColor: "hsla(342, 93%, 61%, 0.10)",
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    backBtn: {
+        flexDirection: "row",
+        alignItems: "center",
+    },
+    inputRow: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 10,
+        borderRadius: 14,
+        paddingHorizontal: 14,
+        paddingVertical: 13,
+    },
+    textInput: {
+        flex: 1,
+    },
+    submitBtn: {
+        borderRadius: 14,
+        paddingVertical: 13,
+        alignItems: "center",
+    },
+    submitText: {
+        color: "#FFFFFF",
+        fontWeight: "700",
+        fontSize: 14,
+    },
+});

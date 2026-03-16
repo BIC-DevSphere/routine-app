@@ -3,8 +3,10 @@
 @tailwind utilities;
 
 @layer components {
+
+  /*Neo base input row (inset effect)*/
   .input-row {
-    @apply row-center-gap bg-input border border-border rounded-xl px-4 py-2;
+    @apply row-center-gap rounded-2xl px-4 py-3;
   }
 
   .input-text {
@@ -15,18 +17,21 @@
     @apply flex-row items-center gap-2;
   }
 
+  /* Primary action button */
   .auth-button {
-    @apply bg-primary rounded-xl p-4 mt-4;
+    @apply rounded-2xl p-4 mt-2 items-center;
   }
 
+  /* Header stat cards */
   .header-overview {
-    @apply bg-secondary/50 p-4 flex-1 gap-2 rounded-xl border border-border;
+    @apply bg-card p-4 flex-1 gap-2 rounded-2xl;
   }
 
   .settings-title {
-    @apply text-sm font-bold text-muted-foreground uppercase tracking-wider;
+    @apply text-xs font-bold text-muted-foreground uppercase tracking-widest;
   }
 
+  /*Light mode — pure neutral + red accent*/
   :root {
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
@@ -34,19 +39,19 @@
     --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
+    --primary: 342 93% 61%;
     --primary-foreground: 210 40% 98%;
     --secondary: 210 40% 96%;
     --secondary-foreground: 222.2 84% 4.9%;
     --muted: 210 40% 96%;
     --muted-foreground: 215.4 16.3% 40%;
-    --accent: 210 40% 96%;
-    --accent-foreground: 222.2 84% 4.9%;
+    --accent: 342 93% 61%;
+    --accent-foreground: 210 40% 98%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
+    --ring: 342 93% 61%;
     --radius: 8px;
   }
 
@@ -57,7 +62,7 @@
     --card-foreground: 210 40% 98%;
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
+    --primary: 342 93% 61%;
     --primary-foreground: 222.2 84% 4.9%;
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;

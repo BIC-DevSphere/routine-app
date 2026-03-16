@@ -1,20 +1,23 @@
-import { View, Text } from "react-native";
-import Ionicons from "@expo/vector-icons/Ionicons";
+import Animated from "react-native-reanimated";
+import { View, Text, StyleSheet } from "react-native";
 import { useState, useEffect } from "react";
-import { getFullDayDate, getGreeting, getIconName } from "@/lib/utils/dateTime";
-import { useProfile } from "@/lib/api/profile";
+import { getFullDayDate } from "@/lib/utils/dateTime";
+import { useColorScheme } from "@/lib/use-color-scheme";
+import { getNeoStyles, NEO_COLORS } from "@/lib/neo-styles";
+import { useFocusFade } from "@/lib/animations";
 
 export default function Header() {
-  const { data: profile } = useProfile();
-  const name = profile?.name;
-  console.log(profile);
+  const { isDarkColorScheme } = useColorScheme();
+  const neo = getNeoStyles(isDarkColorScheme);
+  const colors = isDarkColorScheme ? NEO_COLORS.dark : NEO_COLORS.light;
 
-  const [greeting, setGreeting] = useState(getGreeting());
   const [formattedDate, setFormattedDate] = useState(getFullDayDate());
+
+  const headingAnim = useFocusFade(0,   -14);
+  const statsAnim   = useFocusFade(120, 20);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setGreeting(getGreeting());
       setFormattedDate(getFullDayDate());
     }, 60 * 1000);
 
@@ -22,19 +25,66 @@ export default function Header() {
   }, []);
 
   return (
-    <View className="gap-4">
-      <Text className="text-foreground text-sm">{formattedDate}</Text>
-      <Text className="text-foreground text-3xl">Today's Schedule</Text>
-      <View className="flex-row gap-4">
-        <View className="header-overview">
-          <Text className="text-foreground text-2xl">2</Text>
-          <Text className="text-foreground text-sm">Classes</Text>
+    <View style={styles.container}>
+      <Animated.View style={headingAnim}>
+        <Text className="text-muted-foreground text-xs font-semibold uppercase tracking-widest">
+          {formattedDate}
+        </Text>
+        <Text className="text-foreground font-bold" style={styles.title}>
+          Today's Schedule
+        </Text>
+      </Animated.View>
+
+      <Animated.View style={[styles.statsRow, statsAnim]}>
+        <View
+          style={[
+            styles.statCard,
+            neo.raised,
+            { backgroundColor: colors.bg },
+          ]}
+        >
+          <Text className="text-primary font-bold" style={styles.statNumber}>
+            2
+          </Text>
+          <Text className="text-muted-foreground text-sm">Classes Today</Text>
         </View>
-        <View className="header-overview">
-          <Text className="text-foreground text-2xl">5H 30M</Text>
-          <Text className="text-foreground text-sm">Total Time</Text>
+        <View
+          style={[
+            styles.statCard,
+            neo.raised,
+            { backgroundColor: colors.bg },
+          ]}
+        >
+          <Text className="text-primary font-bold" style={styles.statNumber}>
+            5H 30M
+          </Text>
+          <Text className="text-muted-foreground text-sm">Total Time</Text>
         </View>
-      </View>
+      </Animated.View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    gap: 12,
+  },
+  title: {
+    fontSize: 28,
+    lineHeight: 34,
+  },
+  statsRow: {
+    flexDirection: "row",
+    gap: 14,
+  },
+  statCard: {
+    flex: 1,
+    padding: 16,
+    borderRadius: 18,
+    gap: 4,
+  },
+  statNumber: {
+    fontSize: 24,
+    lineHeight: 28,
+  },
+});

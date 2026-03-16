@@ -5,14 +5,25 @@ import {
   View,
   ActivityIndicator,
   RefreshControl,
-  TouchableOpacity,
+  StyleSheet,
 } from "react-native";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+  withTiming,
+  Easing,
+} from "react-native-reanimated";
 import { authClient } from "@/lib/auth-client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { WeekDay } from "@/lib/types/routine";
 import { useRoutine } from "@/lib/api/routine";
 import Header from "@/components/header";
 import { RoutineCard } from "@/components/routine-card";
+import { DayButton } from "@/components/day-button";
+import { useColorScheme } from "@/lib/use-color-scheme";
+import { getNeoStyles, NEO_COLORS } from "@/lib/neo-styles";
+import { SPRINGS, useFocusFade } from "@/lib/animations";
 
 export default function Home() {
   const { isRefetching, isPending } = authClient.useSession();
@@ -24,15 +35,46 @@ export default function Home() {
   const [todayRoutine, setTodayRoutine] = useState<WeekDay | undefined>(
     undefined
   );
+  const { isDarkColorScheme } = useColorScheme();
+  const neo = getNeoStyles(isDarkColorScheme);
+  const colors = isDarkColorScheme ? NEO_COLORS.dark : NEO_COLORS.light;
 
   const { data: routineData, isLoading, error, refetch } = useRoutine();
 
+  const pickerAnim = useFocusFade(60, 16);
+  const contentOp  = useSharedValue(0);
+  const contentTx  = useSharedValue(30);
+  const prevDayRef = useRef(activeDayIndex);
+
+  const contentAnim = useAnimatedStyle(() => ({
+    opacity: contentOp.value,
+    transform: [{ translateX: contentTx.value }],
+  }));
+
   useEffect(() => {
     if (routineData?.week) {
-      const routineForToday = routineData.week[activeDayIndex];
-      setTodayRoutine(routineForToday);
+      setTodayRoutine(routineData.week[activeDayIndex]);
     }
-  }, [activeDayIndex, routineData]);
+  }, [routineData]);
+
+  useEffect(() => {
+    const direction = activeDayIndex > prevDayRef.current ? 1 : -1;
+    prevDayRef.current = activeDayIndex;
+
+    if (routineData?.week) {
+      setTodayRoutine(routineData.week[activeDayIndex]);
+    }
+
+    contentTx.value = direction * 40;
+    contentOp.value = 0;
+    contentTx.value = withSpring(0, SPRINGS.gentle);
+    contentOp.value = withTiming(1, { duration: 340, easing: Easing.out(Easing.cubic) });
+  }, [activeDayIndex]);
+
+  useEffect(() => {
+    contentTx.value = 0;
+    contentOp.value = withTiming(1, { duration: 420, easing: Easing.out(Easing.ease) });
+  }, []);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -71,85 +113,112 @@ export default function Home() {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
-        <View className="p-4 gap-4">
+        <View style={styles.page}>
           <Header />
 
-          <View className="p-2 bg-secondary/50 flex w-full flex-row gap-4 border border-border rounded-xl">
-            {days.map((day, index) => {
-              const isActiveDay = index === activeDayIndex;
-              return (
-                <TouchableOpacity
-                  key={index}
-                  onPress={() => setActiveDayIndex(index)}
-                  className={`flex-1 py-3 px-1 rounded-xl items-center justify-center ${
-                    isActiveDay ? "bg-primary" : "bg-secondary"
-                  }`}
-                >
-                  <View className="items-center gap-1">
-                    <Text
-                      className={`font-medium capitalize ${
-                        isActiveDay
-                          ? "text-primary-foreground text-sm"
-                          : "text-foreground/50 text-xs"
-                      }`}
-                    >
-                      {day}
-                    </Text>
-                    <Text
-                      className={` ${
-                        isActiveDay
-                          ? "text-primary-foreground font-semibold text-lg"
-                          : "text-muted-foreground"
-                      }`}
-                    >
-                      {weekDates[index]}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              );
-            })}
-          </View>
+          <Animated.View style={[styles.dayPicker, neo.inset, pickerAnim]}>
+            {days.map((day, index) => (
+              <DayButton
+                key={index}
+                day={day}
+                date={weekDates[index]}
+                isActive={index === activeDayIndex}
+                onPress={() => setActiveDayIndex(index)}
+                isDark={isDarkColorScheme}
+                neo={neo}
+              />
+            ))}
+          </Animated.View>
 
-          {isLoading && (
-            <View className="flex-1 justify-center items-center py-20">
-              <ActivityIndicator size="large" className="text-primary" />
-              <Text className="text-muted-foreground mt-4">
-                Loading your routine...
-              </Text>
-            </View>
-          )}
-
-          {error && (
-            <View className="bg-destructive/10 rounded-lg p-4 border border-destructive">
-              <Text className="text-destructive font-semibold mb-1">
-                Error loading routine
-              </Text>
-              <Text className="text-destructive-foreground">
-                {error.message}
-              </Text>
-            </View>
-          )}
-          {!isLoading &&
-            (routineData &&
-            routineData.week.every((day: WeekDay) => day.slots.length === 0) ? (
-              <View className="px-4 py-20">
-                <Text className="text-center text-muted-foreground text-lg">
-                  No classes scheduled this week
+          <Animated.View style={[styles.routineContent, contentAnim]}>
+            {isLoading && (
+              <View className="flex-1 justify-center items-center py-20">
+                <ActivityIndicator size="large" className="text-primary" />
+                <Text className="text-muted-foreground mt-4">
+                  Loading your routine...
                 </Text>
               </View>
-            ) : todayRoutine?.slots.length ? (
-              todayRoutine.slots.map((slot, idx) => (
-                <RoutineCard key={idx} slot={slot} />
-              ))
-            ) : routineData ? (
-              <View className="px-4 py-20">
-                <Text className="text-center text-muted-foreground text-lg">
-                  No classes scheduled for this day
+            )}
+
+            {error && (
+              <View style={styles.errorBox}>
+                <Text className="text-destructive font-semibold mb-1">
+                  Error loading routine
+                </Text>
+                <Text className="text-muted-foreground text-sm">
+                  {error.message}
                 </Text>
               </View>
-            ) : null)}
+            )}
+
+            {!isLoading &&
+              (routineData &&
+              routineData.week.every((day: WeekDay) => day.slots.length === 0) ? (
+                <View className="px-4 py-20">
+                  <Text className="text-center text-muted-foreground text-lg">
+                    No classes scheduled this week
+                  </Text>
+                </View>
+              ) : todayRoutine?.slots.length ? (
+                <View style={styles.cardsList}>
+                  {todayRoutine.slots.map((slot, idx) => (
+                    <RoutineCard key={idx} slot={slot} index={idx} />
+                  ))}
+                </View>
+              ) : routineData ? (
+                <View className="px-4 py-20">
+                  <Text className="text-center text-muted-foreground text-lg">
+                    No classes scheduled for this day
+                  </Text>
+                </View>
+              ) : null)}
+          </Animated.View>
         </View>
       </ScrollView>
     </Container>
   );
 }
+
+const styles = StyleSheet.create({
+  page: {
+    padding: 16,
+    gap: 16,
+  },
+  dayPicker: {
+    flexDirection: "row",
+    borderRadius: 18,
+    padding: 6,
+    gap: 4,
+  },
+  dayBtn: {
+    paddingVertical: 10,
+    paddingHorizontal: 2,
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 4,
+  },
+  activeDayBtn: {
+    borderRadius: 12,
+  },
+  dayLabel: {
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+  },
+  dateLabel: {
+    lineHeight: 20,
+  },
+  routineContent: {
+    gap: 12,
+  },
+  cardsList: {
+    gap: 12,
+  },
+  errorBox: {
+    borderRadius: 14,
+    padding: 14,
+    backgroundColor: "rgba(220,38,38,0.08)",
+    borderWidth: 1,
+    borderColor: "rgba(220,38,38,0.25)",
+  },
+});
